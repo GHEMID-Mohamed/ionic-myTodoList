@@ -1,6 +1,6 @@
 import { Component } from "@angular/core"
 import { NavController, NavParams } from "ionic-angular"
-import { TodosService } from "../../services/todos.service"
+import { TodoServiceProvider } from "../../services/todos.service"
 import { Validators, FormBuilder, FormGroup } from "@angular/forms"
 
 @Component({
@@ -13,7 +13,7 @@ export class NewTodoPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public todoService: TodosService,
+    public todoService: TodoServiceProvider,
     private formBuilder: FormBuilder
   ) {
     this.todo = this.formBuilder.group({
@@ -23,11 +23,11 @@ export class NewTodoPage {
   }
 
   onAddTodo() {
-    this.todoService.addTodo({
-      title: this.todo.value.title,
-      description: this.todo.value.description,
-      state: false
-    })
+    //this.todoService.addTodo({
+    //  title: this.todo.value.title,
+    //  description: this.todo.value.description,
+    //  state: false
+    //})
     console.log(this.todo.value)
     this.navCtrl.pop()
   }

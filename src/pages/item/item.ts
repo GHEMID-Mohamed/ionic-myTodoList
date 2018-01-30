@@ -8,15 +8,15 @@ import { IonicPage, NavController, NavParams } from "ionic-angular"
 export class Item {
   @Input("itemData") itemData
 
-  title: string = ''
-  description: string = ''
-  state: boolean = false
+  uuid: string
+  name: string
+  complete: boolean
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
   ngOnInit() {
-    this.title = this.itemData.title
-    this.description = this.itemData.description
-    this.state = this.itemData.state
+    this.uuid = this.itemData.uuid
+    this.name = this.itemData.name
+    this.complete = this.itemData.complete
   }
 }

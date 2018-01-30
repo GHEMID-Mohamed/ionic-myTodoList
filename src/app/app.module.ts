@@ -10,7 +10,7 @@ import { Item } from '../pages/item/item'
 import { ListPage } from '../pages/list/list'
 import { NewTodoPage } from '../pages/new-todo/new-todo'
 
-import { TodosService } from '../services/todos.service'
+import { TodoServiceProvider } from '../services/todos.service'
 
 @NgModule({
   declarations: [
@@ -36,7 +36,7 @@ import { TodosService } from '../services/todos.service'
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    TodosService
+    TodoServiceProvider
   ]
 })
 export class AppModule {}

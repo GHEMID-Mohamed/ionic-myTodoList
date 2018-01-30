@@ -1,12 +1,11 @@
 <ion-card>
   <ion-card-header>
-    {{ title }}
+    {{ name }}
   </ion-card-header>
   <ion-card-content>
-    {{ description }}
+    <ion-item>
+      <ion-label>Done</ion-label>
+      <ion-checkbox color="dark" [(ngModel)]="complete"></ion-checkbox>
+    </ion-item>
   </ion-card-content>
-  <ion-item>
-    <ion-label>Done</ion-label>
-    <ion-checkbox color="dark" checked="true"></ion-checkbox>
-  </ion-item>
 </ion-card>

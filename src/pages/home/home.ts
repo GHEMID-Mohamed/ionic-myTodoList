@@ -1,28 +1,30 @@
 import { Component } from "@angular/core"
 import { NavController, NavParams } from "ionic-angular"
 import { ListPage } from "../list/list"
+import { TodoList } from "../../model/model"
 
-import { TodosService } from "../../services/todos.service"
+import { TodoServiceProvider } from "../../services/todos.service"
 
 @Component({
   selector: "page-home",
   templateUrl: "home.html"
 })
 export class HomePage {
-  lists: {
-    nom: string
-    todos: { title: string; description: string; state: boolean }[]
-  }[] = []
+  lists: TodoList[]
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public todoService: TodosService
+    public todoServiceProvider: TodoServiceProvider
   ) {}
 
-  onListSelected(nomList) {
+  ngOnInit() {
+    this.todoServiceProvider.getList().subscribe(lists => (this.lists = lists))
+  }
+
+  onListSelected(uuid: string) {
     this.navCtrl.push(ListPage, {
-      nom: nomList
+      uuid: uuid
     })
   }
 }

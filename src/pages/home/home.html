@@ -8,8 +8,8 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item *ngFor="let nomList of lists" (click)="onListSelected(nomList)" >
-      {{ nomList }}
+    <ion-item *ngFor="let list of lists" (click)="onListSelected(list.uuid)">
+      {{ list.name }}
     </ion-item>
   </ion-list>
 </ion-content>
