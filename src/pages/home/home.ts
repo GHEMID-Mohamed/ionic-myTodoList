@@ -1,10 +1,16 @@
 import { Component } from "@angular/core"
-import { NavController, NavParams, AlertController } from "ionic-angular"
+import {
+  IonicPage,
+  NavController,
+  NavParams,
+  AlertController
+} from "ionic-angular"
 import { ListPage } from "../list/list"
-import { TodoList } from "../../model/model"
+import { TodoList } from "../../models/TodoList"
 
 import { TodoServiceProvider } from "../../services/todos.service"
 
+@IonicPage()
 @Component({
   selector: "page-home",
   templateUrl: "home.html"

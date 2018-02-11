@@ -2,7 +2,7 @@ import { Component } from "@angular/core"
 import { IonicPage, NavController, NavParams } from "ionic-angular"
 import { TodoServiceProvider } from "../../services/todos.service"
 import { NewTodoPage } from "../new-todo/new-todo"
-import { TodoItem } from "../../model/model"
+import { TodoItem } from "../../models/TodoItem"
 
 @Component({
   selector: "page-list",

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Http } from "@angular/http"
-import { TodoItem, TodoList } from "../model/model"
+import { TodoItem } from "../models/TodoItem"
+import { TodoList } from "../models/TodoList"
 import { Observable } from "rxjs/Observable"
 import { generateId } from "../utils"
 import "rxjs/Rx"

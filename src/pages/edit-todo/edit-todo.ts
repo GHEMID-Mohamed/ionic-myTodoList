@@ -1,7 +1,7 @@
 import { Component } from "@angular/core"
 import { IonicPage, NavController, NavParams } from "ionic-angular"
 import { Validators, FormBuilder, FormGroup } from "@angular/forms"
-import { TodoItem } from "../../model/model"
+import { TodoItem } from "../../models/TodoItem"
 import { TodoServiceProvider } from "../../services/todos.service"
 
 @Component({
