@@ -9,7 +9,8 @@ import { TodoItem } from "../../model/model"
   templateUrl: "list.html"
 })
 export class ListPage {
-  uuid: string
+  name: string
+  listUuid: string
   todoItems: TodoItem[]
 
   constructor(
@@ -17,19 +18,20 @@ export class ListPage {
     public navParams: NavParams,
     public todoServiceProvider: TodoServiceProvider
   ) {
-    this.uuid = this.navParams.get("uuid")
+    this.name = this.navParams.get("name")
+    this.listUuid = this.navParams.get("listUuid")
   }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.todoServiceProvider
-      .getTodos(this.uuid)
+      .getTodos(this.listUuid)
       .subscribe(todos => (this.todoItems = todos))
-
-      console.log(this.todoItems)
   }
+
 
   openNewTodoPage() {
-    this.navCtrl.push(NewTodoPage)
+    this.navCtrl.push(NewTodoPage, {
+      listUuid: this.listUuid
+    })
   }
-
 }

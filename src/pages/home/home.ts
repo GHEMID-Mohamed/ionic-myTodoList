@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { NavController, NavParams } from "ionic-angular"
+import { NavController, NavParams, AlertController } from "ionic-angular"
 import { ListPage } from "../list/list"
 import { TodoList } from "../../model/model"
 
@@ -15,16 +15,44 @@ export class HomePage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public todoServiceProvider: TodoServiceProvider
+    public todoServiceProvider: TodoServiceProvider,
+    public alertCtrl: AlertController
   ) {}
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.todoServiceProvider.getList().subscribe(lists => (this.lists = lists))
   }
 
-  onListSelected(uuid: string) {
+  onListSelected(list: TodoList) {
     this.navCtrl.push(ListPage, {
-      uuid: uuid
+      name: list.name,
+      listUuid: list.uuid
     })
+  }
+
+  onAddList() {
+    let prompt = this.alertCtrl.create({
+      title: "Add list",
+      message: "Enter the name of the new list",
+      inputs: [
+        {
+          name: "title",
+          placeholder: "Title"
+        }
+      ],
+      buttons: [
+        {
+          text: "Cancel",
+          handler: data => {}
+        },
+        {
+          text: "Add",
+          handler: data => {
+            this.todoServiceProvider.AddList(data.title)
+          }
+        }
+      ]
+    })
+    prompt.present()
   }
 }

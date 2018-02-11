@@ -9,6 +9,7 @@ import { HomePage } from '../pages/home/home';
 import { Item } from '../pages/item/item'
 import { ListPage } from '../pages/list/list'
 import { NewTodoPage } from '../pages/new-todo/new-todo'
+import { EditTodoPage } from '../pages/edit-todo/edit-todo'
 
 import { TodoServiceProvider } from '../services/todos.service'
 
@@ -18,7 +19,8 @@ import { TodoServiceProvider } from '../services/todos.service'
     HomePage,
     NewTodoPage,
     Item,
-    ListPage
+    ListPage,
+    EditTodoPage
   ],
   imports: [
     BrowserModule,
@@ -30,7 +32,8 @@ import { TodoServiceProvider } from '../services/todos.service'
     HomePage,
     NewTodoPage,
     Item,
-    ListPage
+    ListPage,
+    EditTodoPage
   ],
   providers: [
     StatusBar,

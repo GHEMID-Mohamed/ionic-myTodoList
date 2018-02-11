@@ -1,14 +1,14 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>New todo</ion-title>
+    <ion-title>Edit todo</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <form [formGroup]="todoform" (ngSubmit)="onAddTodo()">
+  <form [formGroup]="todoEditForm" (ngSubmit)="onEditTodo()">
     <ion-item>
       <ion-label>Todo</ion-label>
       <ion-input type="text" formControlName="title"></ion-input>
@@ -17,6 +17,6 @@
       <ion-label>Description</ion-label>
       <ion-textarea formControlName="description"></ion-textarea>
     </ion-item>
-    <button ion-button float-right type="submit" [disabled]="!todoform.valid">Add</button>
+    <button ion-button type="submit" [disabled]="!todoEditForm.valid">Validate</button>
   </form>
 </ion-content>

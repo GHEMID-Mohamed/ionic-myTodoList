@@ -1,7 +1,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>{{ nom }}</ion-title>
+    <ion-title>{{ name }}</ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="openNewTodoPage()">
         <ion-icon name="add"></ion-icon>
@@ -15,7 +15,7 @@
 <ion-content padding>
   <ion-list>
     <ion-item *ngFor="let todo of todoItems">
-      <item-todo [itemData]="todo"></item-todo>
+      <item-todo [listUuid]="listUuid" [itemData]="todo" ></item-todo>
     </ion-item>
   </ion-list>
 </ion-content>

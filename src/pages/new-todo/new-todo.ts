@@ -2,33 +2,37 @@ import { Component } from "@angular/core"
 import { NavController, NavParams } from "ionic-angular"
 import { TodoServiceProvider } from "../../services/todos.service"
 import { Validators, FormBuilder, FormGroup } from "@angular/forms"
+import { TodoItem } from "../../model/model"
+import { generateId } from "../../utils"
 
 @Component({
   selector: "page-new-todo",
   templateUrl: "new-todo.html"
 })
 export class NewTodoPage {
-  private todo: FormGroup
+  todoform: any
+  listUuid: string
+  todoItem: TodoItem = { name: "", complete: false, desc: "", uuid: "" }
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public todoService: TodoServiceProvider,
+    public todoServiceProvider: TodoServiceProvider,
     private formBuilder: FormBuilder
   ) {
-    this.todo = this.formBuilder.group({
+    this.todoform = this.formBuilder.group({
       title: ["", Validators.required],
       description: [""]
     })
+    this.listUuid = navParams.get("listUuid")
   }
 
   onAddTodo() {
-    //this.todoService.addTodo({
-    //  title: this.todo.value.title,
-    //  description: this.todo.value.description,
-    //  state: false
-    //})
-    console.log(this.todo.value)
+    this.todoItem.name = this.todoform.value.title
+    this.todoItem.desc = this.todoform.value.description
+    this.todoItem.complete = false
+    this.todoItem.uuid = generateId()
+    this.todoServiceProvider.addTodo(this.listUuid, this.todoItem)
     this.navCtrl.pop()
   }
 }

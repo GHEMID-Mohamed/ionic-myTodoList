@@ -3,12 +3,17 @@
     <ion-title>
       My todoLists
     </ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="onAddList()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <ion-list>
-    <ion-item *ngFor="let list of lists" (click)="onListSelected(list.uuid)">
+    <ion-item *ngFor="let list of lists" (click)="onListSelected(list)">
       {{ list.name }}
     </ion-item>
   </ion-list>

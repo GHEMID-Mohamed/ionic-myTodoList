@@ -1,5 +1,12 @@
 import { Component, Input } from "@angular/core"
-import { IonicPage, NavController, NavParams } from "ionic-angular"
+import { EditTodoPage } from "../edit-todo/edit-todo"
+import {
+  IonicPage,
+  NavController,
+  NavParams,
+  AlertController
+} from "ionic-angular"
+import { TodoServiceProvider } from "../../services/todos.service"
 
 @Component({
   selector: "item-todo",
@@ -7,16 +14,44 @@ import { IonicPage, NavController, NavParams } from "ionic-angular"
 })
 export class Item {
   @Input("itemData") itemData
+  @Input("listUuid") listUuid
 
-  uuid: string
-  name: string
-  complete: boolean
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public todoServiceProvider: TodoServiceProvider,
+    public alertCtrl: AlertController
+  ) {}
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  onEdit(uuid: string) {
+    this.navCtrl.push(EditTodoPage, {
+      listUuid: this.listUuid,
+      todoItem: this.itemData
+    })
+  }
 
-  ngOnInit() {
-    this.uuid = this.itemData.uuid
-    this.name = this.itemData.name
-    this.complete = this.itemData.complete
+  onDelete() {
+    let confirm = this.alertCtrl.create({
+      title: "Delete item",
+      message: "Are sure you want to delete this item?",
+      buttons: [
+        {
+          text: "Disagree",
+          handler: () => {
+            console.log("Disagree clicked")
+          }
+        },
+        {
+          text: "Agree",
+          handler: () => {
+            this.todoServiceProvider.deleteTodo(
+              this.listUuid,
+              this.itemData.uuid
+            )
+          }
+        }
+      ]
+    })
+    confirm.present()
   }
 }

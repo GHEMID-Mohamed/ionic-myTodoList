@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core"
 import { Http } from "@angular/http"
 import { TodoItem, TodoList } from "../model/model"
 import { Observable } from "rxjs/Observable"
+import { generateId } from "../utils"
 import "rxjs/Rx"
 
 @Injectable()
@@ -51,8 +52,10 @@ export class TodoServiceProvider {
     }
   ]
 
-  constructor() {
-    console.log("Hello TodoServiceProvider Provider")
+  constructor() {}
+
+  public AddList(name: string) {
+    this.data.push({ uuid: generateId(), name: name, items: [] })
   }
 
   public getList(): Observable<TodoList[]> {
@@ -74,6 +77,15 @@ export class TodoServiceProvider {
     let index = items.findIndex(value => value.uuid == uuid)
     if (index != -1) {
       items.splice(index, 1)
+    }
+  }
+
+  public addTodo(listUuid: String, addedItem: TodoItem) {
+    let list = this.data.find(d => d.uuid == listUuid)
+    let index = this.data.findIndex(list => list.uuid == listUuid)
+    if (index != -1) {
+      list.items.push(addedItem)
+      this.data[index] = list
     }
   }
 }
