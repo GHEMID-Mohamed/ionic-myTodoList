@@ -7,8 +7,10 @@ import {
 } from "ionic-angular"
 import { ListPage } from "../list/list"
 import { TodoList } from "../../models/TodoList"
+import { AngularFireAuth } from "angularfire2/auth"
 
 import { TodoServiceProvider } from "../../services/todos.service"
+import { ProfilPage } from '../profil/profil'
 
 @IonicPage()
 @Component({
@@ -19,11 +21,18 @@ export class HomePage {
   lists: TodoList[]
 
   constructor(
+    private afAuth: AngularFireAuth,
     public navCtrl: NavController,
     public navParams: NavParams,
     public todoServiceProvider: TodoServiceProvider,
     public alertCtrl: AlertController
-  ) {}
+  ) {
+    this.afAuth.auth.onAuthStateChanged(user => {
+      if (!user) {
+        this.navCtrl.setRoot("/")
+      }
+    })
+  }
 
   ionViewWillEnter() {
     this.todoServiceProvider.getList().subscribe(lists => (this.lists = lists))
@@ -61,4 +70,14 @@ export class HomePage {
     })
     prompt.present()
   }
+
+  onSeeProfile() {
+    const user = this.afAuth.auth.currentUser
+      if (user) {
+        this.navCtrl.push(ProfilPage, {
+          user: user
+        })
+      }
+  }
+
 }

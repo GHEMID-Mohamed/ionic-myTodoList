@@ -1,22 +1,37 @@
 import { Component } from "@angular/core"
-import { IonicPage, NavController, NavParams } from "ionic-angular"
+import {
+  IonicPage,
+  NavController,
+  NavParams,
+  AlertController
+} from "ionic-angular"
 import { User } from "../../models/user"
 import { AngularFireAuth } from "angularfire2/auth"
+import firebase from "firebase"
+import { GooglePlus } from "@ionic-native/google-plus"
 
 @IonicPage()
 @Component({
   selector: "page-authentification",
   templateUrl: "authentification.html",
-  providers: [AngularFireAuth]
+  providers: [GooglePlus]
 })
 export class AuthentificationPage {
   user = {} as User
 
   constructor(
     private afAuth: AngularFireAuth,
+    private googlePlus: GooglePlus,
+    public alertCtrl: AlertController,
     public navCtrl: NavController,
     public navParams: NavParams
-  ) {}
+  ) {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {})
+      .catch(function(error) {})
+  }
 
   async login(user: User) {
     try {
@@ -28,7 +43,12 @@ export class AuthentificationPage {
         this.navCtrl.setRoot("HomePage")
       }
     } catch (e) {
-      console.error(e)
+      let alert = this.alertCtrl.create({
+        title: "Login",
+        subTitle: e.message,
+        buttons: ["OK"]
+      })
+      alert.present()
     }
   }
 
@@ -44,5 +64,42 @@ export class AuthentificationPage {
     } catch (e) {
       console.error(e)
     }
+  }
+
+  loginGoogle(): void {
+    let provider = new firebase.auth.GoogleAuthProvider()
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(result => {
+        let token = result.credential.accessToken
+        this.navCtrl.setRoot("HomePage")
+      })
+      .catch(error => {
+        var errorCode = error.code
+        console.log(error.message)
+      })
+  }
+
+  loginGoogleNative(): void {
+    this.googlePlus
+      .login({
+        webClientId:
+          "146278318061-ahmheb0n83k1q5ia522qffl75adqct68.apps.googleusercontent.com"
+      })
+      .then(
+        res => {
+          console.log(res)
+        },
+        err => {
+          console.log(err)
+        }
+      )
+  }
+
+  logout() {
+    this.googlePlus.logout().then(() => {
+      console.log("logged out")
+    })
   }
 }
