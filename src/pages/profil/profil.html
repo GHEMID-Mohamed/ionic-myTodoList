@@ -1,22 +1,20 @@
-<!--
-  Generated template for the ProfilPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
   <ion-navbar>
     <ion-title>profil</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
 <ion-content padding>
 
-    <ion-badge>{{user.email}}</ion-badge>
-    <ion-img src="{{user.photoURL}}" alt="picture"></ion-img>
+  <ion-card>
+    <img src="{{user.photoURL}}" alt="picture" width="100" height="200" />
+    <ion-card-content>
+      <ion-card-title>
+        {{user.email}}
+      </ion-card-title>
+    </ion-card-content>
+  </ion-card>
 
   <button ion-button block color="danger" (click)="logOut()">
     <ion-icon name="log-out"></ion-icon>

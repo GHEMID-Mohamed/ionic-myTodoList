@@ -17,7 +17,6 @@ export class ProfilPage {
     private afAuth: AngularFireAuth
   ) {
     this.user = navParams.get("user")
-    console.log(this.user)
   }
 
   logOut() {
@@ -25,7 +24,7 @@ export class ProfilPage {
       .auth()
       .signOut()
       .then(() => {
-        this.navCtrl.setRoot("/")
+        this.navCtrl.popToRoot()
       })
       .catch(function(error) {})
   }

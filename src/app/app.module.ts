@@ -27,7 +27,8 @@ import { TodoServiceProvider } from "../services/todos.service"
     ListPage,
     MyApp,
     NewTodoPage,
-    ProfilPage
+    ProfilPage,
+    HomePage
   ],
   imports: [
     BrowserModule,
@@ -43,7 +44,8 @@ import { TodoServiceProvider } from "../services/todos.service"
     ListPage,
     MyApp,
     NewTodoPage,
-    ProfilPage
+    ProfilPage,
+    HomePage
   ],
   providers: [
     StatusBar,

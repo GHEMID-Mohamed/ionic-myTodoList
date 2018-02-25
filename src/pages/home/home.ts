@@ -29,7 +29,7 @@ export class HomePage {
   ) {
     this.afAuth.auth.onAuthStateChanged(user => {
       if (!user) {
-        this.navCtrl.setRoot("/")
+        this.navCtrl.popToRoot()
       }
     })
   }

@@ -9,6 +9,7 @@ import { User } from "../../models/user"
 import { AngularFireAuth } from "angularfire2/auth"
 import firebase from "firebase"
 import { GooglePlus } from "@ionic-native/google-plus"
+import { HomePage } from '../home/home'
 
 @IonicPage()
 @Component({
@@ -73,7 +74,7 @@ export class AuthentificationPage {
       .signInWithPopup(provider)
       .then(result => {
         let token = result.credential.accessToken
-        this.navCtrl.setRoot("HomePage")
+        this.navCtrl.push(HomePage)
       })
       .catch(error => {
         var errorCode = error.code
