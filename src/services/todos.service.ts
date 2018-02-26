@@ -4,89 +4,93 @@ import { TodoItem } from "../models/TodoItem"
 import { TodoList } from "../models/TodoList"
 import { Observable } from "rxjs/Observable"
 import { generateId } from "../utils"
+import firebase from "firebase"
+import { ReplaySubject } from "rxjs/ReplaySubject"
 import "rxjs/Rx"
 
 @Injectable()
 export class TodoServiceProvider {
-  data: TodoList[] = [
-    {
-      uuid: "a351e558-29ce-4689-943c-c3e97be0df8b",
-      name: "List 1",
-      items: [
-        {
-          uuid: "7dc94eb4-d4e9-441b-b06b-0ca29738c8d2",
-          name: "Item 1-1",
-          complete: false
-        },
-        {
-          uuid: "20c09bdd-1cf8-43b0-9111-977fc4d343bc",
-          name: "Item 1-2",
-          complete: false
-        },
-        {
-          uuid: "bef88351-f4f1-4b6a-965d-bb1a4fa3b444",
-          name: "Item 1-3",
-          complete: true
-        }
-      ]
-    },
-    {
-      uuid: "90c04913-c1a2-47e5-9535-c7a430cdcf9c",
-      name: "List 2",
-      items: [
-        {
-          uuid: "72849f5f-2ef6-444b-98b0-b50fc019f97c",
-          name: "Item 2-1",
-          complete: false
-        },
-        {
-          uuid: "80d4cbbe-1c64-4603-8d00-ee4932045333",
-          name: "Item 2-2",
-          complete: true
-        },
-        {
-          uuid: "a1cd4568-590b-428b-989d-165f22365485",
-          name: "Item 2-3",
-          complete: true
-        }
-      ]
-    }
-  ]
+  data: TodoList[] = []
+  ref: any
 
-  constructor() {}
-
-  public AddList(name: string) {
-    this.data.push({ uuid: generateId(), name: name, items: [] })
+  constructor() {
+    this.ref = firebase.database().ref("myLists/")
+    this.ref.on("value", this.convertData, this)
   }
 
-  public getList(): Observable<TodoList[]> {
+  public AddList(name: string) {
+    firebase
+      .database()
+      .ref(`myLists/${generateId()}`)
+      .set({
+        name: name,
+        items: []
+      })
+  }
+
+  convertData(snapshot) {
+    const data: any = []
+    for (let key in snapshot.val()) {
+      const items: any = []
+      for (let keyItem in snapshot.val()[key].items) {
+        items.push({
+          uuid: keyItem,
+          name: snapshot.val()[key].items[keyItem].name,
+          desc: snapshot.val()[key].items[keyItem].desc,
+          complete: snapshot.val()[key].items[keyItem].complete
+        })
+      }
+      data.push({
+        uuid: key,
+        name: snapshot.val()[key].name,
+        items: items
+      })
+    }
+    this.data = data
+  }
+
+  public getList() {
     return Observable.of(this.data)
   }
 
-  public getTodos(uuid: String): Observable<TodoItem[]> {
+  public deleteList(uuid: string) {
+    firebase
+      .database()
+      .ref(`myLists/${uuid}`)
+      .remove()
+  }
+
+  public getTodos(uuid: String) {
     return Observable.of(this.data.find(d => d.uuid == uuid).items)
   }
 
   public editTodo(listUuid: String, editedItem: TodoItem) {
-    let items = this.data.find(d => d.uuid == listUuid).items
-    let index = items.findIndex(value => value.uuid == editedItem.uuid)
-    items[index] = editedItem
+    firebase
+      .database()
+      .ref(`myLists/${listUuid}/items/${editedItem.uuid}`)
+      .set(editedItem)
   }
 
   public deleteTodo(listUuid: String, uuid: String) {
-    let items = this.data.find(d => d.uuid == listUuid).items
-    let index = items.findIndex(value => value.uuid == uuid)
-    if (index != -1) {
-      items.splice(index, 1)
-    }
+    firebase
+      .database()
+      .ref(`myLists/${listUuid}/items/${uuid}`)
+      .remove()
   }
 
   public addTodo(listUuid: String, addedItem: TodoItem) {
-    let list = this.data.find(d => d.uuid == listUuid)
-    let index = this.data.findIndex(list => list.uuid == listUuid)
-    if (index != -1) {
-      list.items.push(addedItem)
-      this.data[index] = list
-    }
+    const newTodoKey = firebase
+      .database()
+      .ref()
+      .child("items")
+      .push().key
+    firebase
+      .database()
+      .ref(`myLists/${listUuid}/items/${newTodoKey}`)
+      .set({
+        name: addedItem.name,
+        desc: addedItem.desc,
+        complete: false
+      })
   }
 }

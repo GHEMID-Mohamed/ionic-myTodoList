@@ -41,7 +41,7 @@ export class AuthentificationPage {
         user.password
       )
       if (result) {
-        this.navCtrl.setRoot("HomePage")
+        this.navCtrl.push(HomePage)
       }
     } catch (e) {
       let alert = this.alertCtrl.create({
@@ -60,7 +60,7 @@ export class AuthentificationPage {
         user.password
       )
       if (result) {
-        this.navCtrl.setRoot("HomePage")
+        this.navCtrl.push(HomePage)
       }
     } catch (e) {
       console.error(e)

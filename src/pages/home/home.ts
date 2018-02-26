@@ -9,8 +9,11 @@ import { ListPage } from "../list/list"
 import { TodoList } from "../../models/TodoList"
 import { AngularFireAuth } from "angularfire2/auth"
 
+import { generateId } from "../../utils"
+import firebase from "firebase"
+
 import { TodoServiceProvider } from "../../services/todos.service"
-import { ProfilPage } from '../profil/profil'
+import { ProfilPage } from "../profil/profil"
 
 @IonicPage()
 @Component({
@@ -18,7 +21,8 @@ import { ProfilPage } from '../profil/profil'
   templateUrl: "home.html"
 })
 export class HomePage {
-  lists: TodoList[]
+  lists: TodoList[] = []
+  ref: any
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -32,10 +36,22 @@ export class HomePage {
         this.navCtrl.popToRoot()
       }
     })
+
+    this.ref = firebase.database().ref("myLists/")
+    this.ref.on("value", this.updateData, this)
+  }
+
+  updateData(snap) {
+    this.todoServiceProvider.convertData(snap)
+    this.todoServiceProvider.getList().subscribe(lists => {
+      this.lists = lists
+    })
   }
 
   ionViewWillEnter() {
-    this.todoServiceProvider.getList().subscribe(lists => (this.lists = lists))
+    this.todoServiceProvider.getList().subscribe(lists => {
+      this.lists = lists
+    })
   }
 
   onListSelected(list: TodoList) {
@@ -73,11 +89,32 @@ export class HomePage {
 
   onSeeProfile() {
     const user = this.afAuth.auth.currentUser
-      if (user) {
-        this.navCtrl.push(ProfilPage, {
-          user: user
-        })
-      }
+    if (user) {
+      this.navCtrl.push(ProfilPage, {
+        user: user
+      })
+    }
   }
 
+  onDeleteList(uuid: string) {
+    let confirm = this.alertCtrl.create({
+      title: "Delete item",
+      message: "Are sure you want to delete this item?",
+      buttons: [
+        {
+          text: "Disagree",
+          handler: () => {
+            console.log("Disagree clicked")
+          }
+        },
+        {
+          text: "Agree",
+          handler: () => {
+            this.todoServiceProvider.deleteList(uuid)
+          }
+        }
+      ]
+    })
+    confirm.present()
+  }
 }
