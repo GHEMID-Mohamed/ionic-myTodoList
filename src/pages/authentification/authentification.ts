@@ -9,7 +9,7 @@ import { User } from "../../models/user"
 import { AngularFireAuth } from "angularfire2/auth"
 import firebase from "firebase"
 import { GooglePlus } from "@ionic-native/google-plus"
-import { HomePage } from '../home/home'
+import { HomePage } from "../home/home"
 
 @IonicPage()
 @Component({

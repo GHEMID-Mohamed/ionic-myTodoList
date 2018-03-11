@@ -11,7 +11,7 @@ import "rxjs/Rx"
 
 @Injectable()
 export class TodoServiceProvider {
-  data: TodoList[] = []
+  public data: TodoList[] = []
   refLists: any
   refUsers: any
 
@@ -40,31 +40,47 @@ export class TodoServiceProvider {
   }
 
   public AddList(name: string) {
+    const newListUuid = firebase
+      .database()
+      .ref()
+      .child("myLists")
+      .push().key
+
     firebase
       .database()
-      .ref(`myLists/${generateId()}`)
+      .ref(`myLists/${newListUuid}`)
       .set({
         name: name,
         items: []
+      })
+
+    firebase
+      .database()
+      .ref(`users/${firebase.auth().currentUser.uid}/lists/${newListUuid}`)
+      .set({
+        name
       })
   }
 
   convertData(snapshot, uuid) {
     const items: any = []
-    for (let keyItem in snapshot.val().items) {
-      items.push({
-        uuid: keyItem,
-        name: snapshot.val().items[keyItem].name,
-        desc: snapshot.val().items[keyItem].desc,
-        complete: snapshot.val().items[keyItem].complete
-      })
-    }
-    if (!this.listExists(uuid)) {
-      this.data.push({
-        uuid,
-        name: snapshot.val().name,
-        items: items
-      })
+    if (snapshot.val() !== null && snapshot.val().items !== null) {
+      for (let keyItem in snapshot.val().items) {
+        items.push({
+          uuid: keyItem,
+          name: snapshot.val().items[keyItem].name,
+          desc: snapshot.val().items[keyItem].desc,
+          complete: snapshot.val().items[keyItem].complete
+        })
+      }
+
+      if (!this.listExists(uuid)) {
+        this.data.push({
+          uuid,
+          name: snapshot.val().name,
+          items: items
+        })
+      }
     }
   }
 
@@ -121,5 +137,9 @@ export class TodoServiceProvider {
         desc: addedItem.desc,
         complete: false
       })
+  }
+
+  public reinitialize() {
+    this.data = []
   }
 }
