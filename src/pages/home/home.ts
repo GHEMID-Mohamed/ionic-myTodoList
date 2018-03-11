@@ -37,15 +37,7 @@ export class HomePage {
       }
     })
 
-    this.ref = firebase.database().ref("myLists/")
-    this.ref.on("value", this.updateData, this)
-  }
-
-  updateData(snap) {
-    this.todoServiceProvider.convertData(snap)
-    this.todoServiceProvider.getList().subscribe(lists => {
-      this.lists = lists
-    })
+    this.todoServiceProvider.listenUser()
   }
 
   ionViewWillEnter() {

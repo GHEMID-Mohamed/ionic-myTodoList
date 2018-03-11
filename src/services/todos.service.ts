@@ -6,16 +6,37 @@ import { Observable } from "rxjs/Observable"
 import { generateId } from "../utils"
 import firebase from "firebase"
 import { ReplaySubject } from "rxjs/ReplaySubject"
+import { AngularFireAuth } from "angularfire2/auth"
 import "rxjs/Rx"
 
 @Injectable()
 export class TodoServiceProvider {
   data: TodoList[] = []
-  ref: any
+  refLists: any
+  refUsers: any
 
-  constructor() {
-    this.ref = firebase.database().ref("myLists/")
-    this.ref.on("value", this.convertData, this)
+  constructor(private afAuth: AngularFireAuth) {
+    this.listenUser()
+  }
+
+  listenUser() {
+    this.refLists = firebase
+      .database()
+      .ref(`users/${firebase.auth().currentUser.uid}/lists`)
+    this.refLists.on("value", this.handleUsers, this)
+  }
+
+  handleUsers(snapshot) {
+    for (let uuid in snapshot.val()) {
+      let refList = firebase.database().ref(`myLists/${uuid}`)
+      refList.on(
+        "value",
+        snapshot => {
+          this.convertData(snapshot, uuid)
+        },
+        this
+      )
+    }
   }
 
   public AddList(name: string) {
@@ -28,25 +49,33 @@ export class TodoServiceProvider {
       })
   }
 
-  convertData(snapshot) {
-    const data: any = []
-    for (let key in snapshot.val()) {
-      const items: any = []
-      for (let keyItem in snapshot.val()[key].items) {
-        items.push({
-          uuid: keyItem,
-          name: snapshot.val()[key].items[keyItem].name,
-          desc: snapshot.val()[key].items[keyItem].desc,
-          complete: snapshot.val()[key].items[keyItem].complete
-        })
-      }
-      data.push({
-        uuid: key,
-        name: snapshot.val()[key].name,
+  convertData(snapshot, uuid) {
+    const items: any = []
+    for (let keyItem in snapshot.val().items) {
+      items.push({
+        uuid: keyItem,
+        name: snapshot.val().items[keyItem].name,
+        desc: snapshot.val().items[keyItem].desc,
+        complete: snapshot.val().items[keyItem].complete
+      })
+    }
+    if (!this.listExists(uuid)) {
+      this.data.push({
+        uuid,
+        name: snapshot.val().name,
         items: items
       })
     }
-    this.data = data
+  }
+
+  listExists(uuid) {
+    let exists = false
+    this.data.map(list => {
+      if (list.uuid === uuid) {
+        exists = true
+      }
+    })
+    return exists
   }
 
   public getList() {

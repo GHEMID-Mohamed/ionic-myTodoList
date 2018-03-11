@@ -24,18 +24,7 @@ export class ListPage {
     this.name = this.navParams.get("name")
     this.listUuid = this.navParams.get("listUuid")
 
-    this.ref = firebase.database().ref("myLists/")
-    this.ref.on("value", this.updateData, this)
-  }
-
-  updateData(snap) {
-    this.todoServiceProvider.convertData(snap)
-    this.todoServiceProvider
-      .getTodos(this.listUuid)
-      .subscribe(todos =>{
-        console.log(todos)
-        this.todoItems = todos
-      } )
+    this.todoServiceProvider.listenUser()
   }
 
   ionViewWillEnter() {
