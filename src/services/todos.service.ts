@@ -74,7 +74,15 @@ export class TodoServiceProvider {
         })
       }
 
-      if (!this.listExists(uuid)) {
+      let index = this.data.findIndex(value => value.uuid === uuid)
+      console.log(index)
+      if (index !== -1) {
+        this.data[index] = {
+          uuid,
+          name: snapshot.val().name,
+          items: items
+        }
+      } else {
         this.data.push({
           uuid,
           name: snapshot.val().name,
@@ -82,16 +90,6 @@ export class TodoServiceProvider {
         })
       }
     }
-  }
-
-  listExists(uuid) {
-    let exists = false
-    this.data.map(list => {
-      if (list.uuid === uuid) {
-        exists = true
-      }
-    })
-    return exists
   }
 
   public getList() {
