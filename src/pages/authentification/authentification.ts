@@ -19,6 +19,7 @@ import { HomePage } from "../home/home"
 })
 export class AuthentificationPage {
   user = {} as User
+  loading: boolean = true
 
   constructor(
     private afAuth: AngularFireAuth,

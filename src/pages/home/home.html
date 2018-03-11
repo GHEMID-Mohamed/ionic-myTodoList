@@ -17,7 +17,8 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
+  <ion-spinner *ngIf="listsPending"></ion-spinner>
+  <ion-list *ngIf="!listsPending">
     <ion-item *ngFor="let list of lists">
       <span (click)="onListSelected(list)">{{ list.name }}</span>
       <ion-buttons end>

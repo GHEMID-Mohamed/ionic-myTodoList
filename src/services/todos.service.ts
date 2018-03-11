@@ -75,7 +75,7 @@ export class TodoServiceProvider {
       }
 
       let index = this.data.findIndex(value => value.uuid === uuid)
-      console.log(index)
+
       if (index !== -1) {
         this.data[index] = {
           uuid,
@@ -134,6 +134,28 @@ export class TodoServiceProvider {
         name: addedItem.name,
         desc: addedItem.desc,
         complete: false
+      })
+  }
+
+  shareList(email, listUuid, listName) {
+    return firebase
+      .database()
+      .ref(`users/`)
+      .once("value")
+      .then(snapshot => {
+        let userExists = false
+        for (let userUid in snapshot.val()) {
+          if (snapshot.val()[userUid].email === email) {
+            userExists = true
+            firebase
+              .database()
+              .ref(`users/${userUid}/lists/${listUuid}`)
+              .set({
+                name: listName
+              })
+          }
+        }
+        return userExists
       })
   }
 

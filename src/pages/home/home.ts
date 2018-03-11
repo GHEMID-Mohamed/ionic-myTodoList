@@ -22,6 +22,7 @@ import { ProfilPage } from "../profil/profil"
 })
 export class HomePage {
   lists: TodoList[] = []
+  listsPending: boolean = true
   ref: any
 
   constructor(
@@ -43,6 +44,7 @@ export class HomePage {
   ionViewWillEnter() {
     this.todoServiceProvider.getList().subscribe(lists => {
       this.lists = lists
+      this.listsPending = false
     })
   }
 

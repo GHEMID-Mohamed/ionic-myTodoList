@@ -3,6 +3,11 @@
   <ion-navbar>
     <ion-title>{{ name }}</ion-title>
     <ion-buttons end>
+        <button ion-button icon-only (click)="shareList()">
+          <ion-icon name="md-share"></ion-icon>
+        </button>
+      </ion-buttons>
+    <ion-buttons end>
       <button ion-button icon-only (click)="openNewTodoPage()">
         <ion-icon name="add"></ion-icon>
       </button>
