@@ -1,0 +1,32 @@
+<ion-card class="item-style">
+  <ion-card-header>
+    <h2>{{ itemData.name }}</h2>
+  </ion-card-header>
+  <ion-card-content>
+    {{ itemData.desc }}
+    <ion-item>
+      <ion-label>Done</ion-label>
+      <ion-checkbox color="dark" [(ngModel)]="complete"></ion-checkbox>
+    </ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div text-center>
+            <ion-icon name="create" color="primary" (click)="onEdit(uuid)" class="iconSize"></ion-icon>
+          </div>
+        </ion-col>
+        <ion-col>
+          <div text-center>
+            <ion-icon text-center name="image" (click)="addImage()" class="iconSize"></ion-icon>
+          </div>
+        </ion-col>
+        <ion-col>
+          <div text-center>
+            <ion-icon text-center color="danger" name="trash" (click)="onDelete()" class="iconSize"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <img src="{{imgsource}}">
+  </ion-card-content>
+</ion-card>

@@ -1,0 +1,26 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{ name }}</ion-title>
+    <ion-buttons end>
+        <button ion-button icon-only (click)="shareList()">
+          <ion-icon name="md-share"></ion-icon>
+        </button>
+      </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="openNewTodoPage()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list class="list-style">
+    <ion-item *ngFor="let todo of todoItems">
+      <item-todo [listUuid]="listUuid" [itemData]="todo" ></item-todo>
+    </ion-item>
+  </ion-list>
+</ion-content>

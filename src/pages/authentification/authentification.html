@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title class="text-center">Todolists</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-item class="input-style input-placeholder">
+    <ion-input type="text" [(ngModel)]="user.email" placeholder="Username"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-input type="password" [(ngModel)]="user.password"  placeholder="Password"></ion-input>
+  </ion-item>
+
+  <button ion-button (click)="login(user)" block>Login</button>
+  <button ion-button color="light" (click)="register(user)" block>Register</button>
+
+  <button ion-button block color="danger" (click)="loginGoogle()" *ngIf="!userProfile">
+    <ion-icon name="logo-googleplus"></ion-icon>
+    Login with Google
+  </button>
+
+  <button ion-button block color="danger" (click)="loginGoogleNative()" *ngIf="!userProfile">
+    <ion-icon name="logo-googleplus"></ion-icon>
+    Login with Google Native
+  </button>
+
+  <ion-item *ngIf="userProfile">
+    <ion-avatar item-left>
+      <img [src]="userProfile.photoURL">
+    </ion-avatar>
+    <h2>{{ userProfile.displayName }}</h2>
+    <h3>{{ userProfile.email }}</h3>
+  </ion-item>
+</ion-content>
