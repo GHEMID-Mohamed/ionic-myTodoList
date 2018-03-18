@@ -8,6 +8,7 @@ import {
 } from "ionic-angular";
 import { TodoServiceProvider } from "../../services/todos.service";
 //import { FileChooser } from "@ionic-native/file-chooser";
+import { ListPage } from "../list/list";
 
 import firebase from "firebase";
 import { snapshotChanges } from "angularfire2/database";
@@ -23,14 +24,15 @@ export class Item {
   file: any;
   firestore = firebase.storage();
   imgsource: any;
+  refresh: any;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public todoServiceProvider: TodoServiceProvider,
-    public alertCtrl: AlertController,
-    //private fileChooser: FileChooser
-  ) {}
+    public alertCtrl: AlertController //private fileChooser: FileChooser
+  ) {
+  }
 
   addImage() {
     //this.fileChooser.open().then(url => {

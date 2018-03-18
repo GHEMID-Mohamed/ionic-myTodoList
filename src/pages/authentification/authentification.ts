@@ -35,8 +35,6 @@ export class AuthentificationPage {
       .signOut()
       .then(() => {})
       .catch(function(error) {});
-
-    this.todoServiceProvider.listenLists();
   }
 
   async login(user: User) {
@@ -46,6 +44,7 @@ export class AuthentificationPage {
         user.password
       );
       if (result) {
+        this.todoServiceProvider.listenFireBaseDB();
         this.navCtrl.push(HomePage);
       }
     } catch (e) {
@@ -79,6 +78,7 @@ export class AuthentificationPage {
       .signInWithPopup(provider)
       .then(result => {
         let token = result.credential.accessToken;
+        this.todoServiceProvider.listenFireBaseDB();
         this.navCtrl.push(HomePage);
       })
       .catch(error => {

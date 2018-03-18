@@ -15,6 +15,8 @@ import firebase from "firebase";
 import { TodoServiceProvider } from "../../services/todos.service";
 import { ProfilPage } from "../profil/profil";
 
+import "rxjs/Rx";
+
 @IonicPage()
 @Component({
   selector: "page-home",
@@ -42,7 +44,7 @@ export class HomePage {
   getLists() {
     this.listsPending = true;
     this.todoServiceProvider.getList().subscribe(lists => {
-      console.log("subsribe");
+      console.log('im observing')
       this.lists = lists;
       this.listsPending = false;
     });
@@ -108,9 +110,7 @@ export class HomePage {
         {
           text: "Agree",
           handler: () => {
-            this.todoServiceProvider.deleteList(uuid).then(() => {
-              this.getLists();
-            });
+            this.todoServiceProvider.deleteList(uuid)
           }
         }
       ]

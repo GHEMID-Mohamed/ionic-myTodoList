@@ -31,17 +31,25 @@ export class ListPage {
   ) {
     this.name = this.navParams.get("name");
     this.listUuid = this.navParams.get("listUuid");
+
+    let refLists = firebase.database().ref(`myLists/`);
+    refLists.on("value", this.getTodos, this);
   }
 
-  ionViewWillEnter() {
+  getTodos() {
     this.todoServiceProvider
       .getTodos(this.listUuid)
       .subscribe(todos => (this.todoItems = todos));
   }
 
+  ionViewWillEnter() {
+    this.getTodos();
+  }
+
   openNewTodoPage() {
     this.navCtrl.push(NewTodoPage, {
-      listUuid: this.listUuid
+      listUuid: this.listUuid,
+      refreshTodos: this.getTodos()
     });
   }
 
@@ -70,6 +78,7 @@ export class ListPage {
         this.todoServiceProvider
           .shareList(email, this.listUuid, this.name, modeShare)
           .then(listshared => {
+            console.log(listshared)
             if (listshared) {
               let alert = this.alertCtrl.create({
                 title: "List shared",
