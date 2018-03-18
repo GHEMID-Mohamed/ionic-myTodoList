@@ -15,6 +15,7 @@ import { first } from "rxjs/operators";
 export class TodoServiceProvider {
   private data: TodoList[] = [];
   private firstLoad: boolean = true;
+  private userId: string
 
   constructor(private afAuth: AngularFireAuth) {}
 
@@ -23,7 +24,7 @@ export class TodoServiceProvider {
     refLists.on(
       "value",
       listsSnap => {
-        let refUsers = firebase.database().ref(`users/${currentUserId}`);
+        let refUsers = firebase.database().ref(`users/${this.userId}`);
         refUsers.once(
           "value",
           usersSap => {
@@ -36,8 +37,7 @@ export class TodoServiceProvider {
       this
     );
 
-    let currentUserId = firebase.auth().currentUser.uid;
-    let refUsers = firebase.database().ref(`users/${currentUserId}`);
+    let refUsers = firebase.database().ref(`users/${this.userId}`);
     refUsers.on(
       "value",
       snapshot => {
@@ -46,6 +46,14 @@ export class TodoServiceProvider {
       },
       this
     );
+  }
+
+  setUserId(userId: string) {
+    this.userId = userId
+  }
+
+  getUserId() {
+    return this.userId
   }
 
   listenLists(lists: any) {
@@ -98,7 +106,7 @@ export class TodoServiceProvider {
 
     firebase
       .database()
-      .ref(`users/${firebase.auth().currentUser.uid}/lists/${newListUuid}`)
+      .ref(`users/${this.userId}/lists/${newListUuid}`)
       .set({
         name
       });
@@ -116,7 +124,7 @@ export class TodoServiceProvider {
 
     firebase
       .database()
-      .ref(`users/${firebase.auth().currentUser.uid}/lists/${uuid}`)
+      .ref(`users/${this.userId}/lists/${uuid}`)
       .remove();
   }
 

@@ -31,9 +31,6 @@ export class ListPage {
   ) {
     this.name = this.navParams.get("name");
     this.listUuid = this.navParams.get("listUuid");
-
-    let refLists = firebase.database().ref(`myLists/`);
-    refLists.on("value", this.getTodos, this);
   }
 
   getTodos() {

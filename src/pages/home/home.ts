@@ -14,37 +14,34 @@ import firebase from "firebase";
 
 import { TodoServiceProvider } from "../../services/todos.service";
 import { ProfilPage } from "../profil/profil";
+import { Toast } from '@ionic-native/toast';
 
 import "rxjs/Rx";
 
 @IonicPage()
 @Component({
   selector: "page-home",
-  templateUrl: "home.html"
+  templateUrl: "home.html",
+  providers: [Toast]
 })
 export class HomePage {
   lists: TodoList[] = [];
   listsPending: boolean = true;
-  ref: any;
 
   constructor(
-    private afAuth: AngularFireAuth,
+    public afAuth: AngularFireAuth,
     public navCtrl: NavController,
     public navParams: NavParams,
     public todoServiceProvider: TodoServiceProvider,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public toast: Toast
   ) {
-    this.afAuth.auth.onAuthStateChanged(user => {
-      if (!user) {
-        this.navCtrl.popToRoot();
-      }
-    });
+    this.toast.show(this.todoServiceProvider.getUserId(), '5000', 'center')
   }
 
   getLists() {
     this.listsPending = true;
     this.todoServiceProvider.getList().subscribe(lists => {
-      console.log('im observing')
       this.lists = lists;
       this.listsPending = false;
     });

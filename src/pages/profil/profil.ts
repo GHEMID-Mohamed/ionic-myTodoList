@@ -1,34 +1,43 @@
-import { Component } from "@angular/core"
-import { IonicPage, NavController, NavParams } from "ionic-angular"
-import firebase from "firebase"
-import { AngularFireAuth } from "angularfire2/auth"
-import { TodoServiceProvider } from "../../services/todos.service"
+import { Component } from "@angular/core";
+import { IonicPage, NavController, NavParams, Platform } from "ionic-angular";
+import firebase from "firebase";
+import { AngularFireAuth } from "angularfire2/auth";
+import { TodoServiceProvider } from "../../services/todos.service";
+
+import { GooglePlus } from "@ionic-native/google-plus";
 
 @IonicPage()
 @Component({
   selector: "page-profil",
-  templateUrl: "profil.html"
+  templateUrl: "profil.html",
+  providers: [GooglePlus]
 })
 export class ProfilPage {
-  user: any
+  user: any;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    private googlePlus: GooglePlus,
     private afAuth: AngularFireAuth,
-    public todoServiceProvider: TodoServiceProvider
+    public todoServiceProvider: TodoServiceProvider,
+    public platform: Platform
   ) {
-    this.user = navParams.get("user")
+    this.user = navParams.get("user");
   }
 
-  logOut() {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        this.todoServiceProvider.reinitialize()
-        this.navCtrl.popToRoot()
-      })
-      .catch(function(error) {})
+  logout() {
+    this.afAuth.auth.onAuthStateChanged(user => {
+      if (!user) {
+        this.googlePlus.logout().then(() => {
+          this.navCtrl.popToRoot();
+        });
+      } else {
+        this.afAuth.auth.signOut().then(() => {
+          this.todoServiceProvider.reinitialize();
+          this.navCtrl.popToRoot();
+        });
+      }
+    });
   }
 }
