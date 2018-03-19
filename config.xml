@@ -87,4 +87,6 @@
     </plugin>
     <engine name="android" spec="^7.0.0" />
     <plugin name="cordova-plugin-x-toast" spec="^2.6.2" />
+    <plugin name="cordova-plugin-filepath" spec="^1.2.0" />
+    <plugin name="cordova-plugin-file" spec="^6.0.1" />
 </widget>

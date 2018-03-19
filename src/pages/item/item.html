@@ -4,6 +4,8 @@
   </ion-card-header>
   <ion-card-content>
     {{ itemData.desc }}
+    <br />
+    <img src="{{imgsource}}">
     <ion-item>
       <ion-label>Done</ion-label>
       <ion-checkbox color="dark" [(ngModel)]="complete"></ion-checkbox>
@@ -27,6 +29,5 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <img src="{{imgsource}}">
   </ion-card-content>
 </ion-card>

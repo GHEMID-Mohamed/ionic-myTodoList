@@ -36,7 +36,7 @@ export class HomePage {
     public alertCtrl: AlertController,
     public toast: Toast
   ) {
-    this.toast.show(this.todoServiceProvider.getUserId(), '5000', 'center')
+    //this.toast.show(this.todoServiceProvider.getUserId(), '5000', 'center')
   }
 
   getLists() {
