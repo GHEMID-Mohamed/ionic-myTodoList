@@ -120,6 +120,32 @@ export class HomePage {
     prompt.present();
   }
 
+  onEditList(listUuid: string) {
+    let prompt = this.alertCtrl.create({
+      title: "Edit list",
+      message: "Enter the new name of the list",
+      inputs: [
+        {
+          name: "name",
+          placeholder: "Title"
+        }
+      ],
+      buttons: [
+        {
+          text: "Cancel",
+          handler: data => {}
+        },
+        {
+          text: "Add",
+          handler: data => {
+            this.todoServiceProvider.editList(data.name, listUuid);
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
+
   onSeeProfile() {
     const user = this.afAuth.auth.currentUser;
     if (user) {

@@ -112,6 +112,17 @@ export class TodoServiceProvider {
       });
   }
 
+  async editList(nameList, uuidList) {
+    const items = await this.getItemsList(uuidList) 
+    firebase
+      .database()
+      .ref(`myLists/${uuidList}`)
+      .set({
+        name: nameList,
+        items
+      });
+  }
+
   public getList(): Observable<TodoList[]> {
     return Observable.of(this.data);
   }
