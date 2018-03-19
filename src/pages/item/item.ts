@@ -41,6 +41,10 @@ export class Item {
     private toastCtrl: ToastController
   ) {}
 
+  ionViewDidLoad() {
+    this.displayImage();
+  }
+
   showToast(msg, position) {
     let toast = this.toastCtrl.create({
       message: msg,
@@ -72,25 +76,29 @@ export class Item {
         reader.onloadend = (evt: any) => {
           var imgBlob = new Blob([evt.target.result], { type: "image/jpeg" });
           var imageStore = this.firestore.ref().child(this.itemData.uuid);
-          imageStore.put(imgBlob).then((res) => {
-            this.showToast('upload sucess', 'bottom')
-            this.displayImage()
-          }).catch((err) => {
-            alert('Upload Failed' + err);
-          })
+          imageStore
+            .put(imgBlob)
+            .then(res => {
+              this.showToast("upload sucess", "bottom");
+              this.displayImage();
+            })
+            .catch(err => {
+              alert("Upload Failed" + err);
+            });
         };
       });
     });
   }
 
   displayImage() {
+    this.showToast(this.itemData.uuid, 'top')
     this.firestore
       .ref()
       .child(this.itemData.uuid)
       .getDownloadURL()
       .then(url => {
         this.zone.run(() => {
-          this.showToast('image uploaded','bottom')
+          this.showToast("image uploaded", "bottom");
           this.imgsource = url;
         });
       });

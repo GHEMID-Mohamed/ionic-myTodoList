@@ -7,6 +7,7 @@ import { environment } from "../environments/environment";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { StatusBar } from "@ionic-native/status-bar";
 import { AngularFireAuth } from "angularfire2/auth";
+import { SpeechRecognition } from "@ionic-native/speech-recognition";
 
 import { MyApp } from "./app.component";
 import { HomePage } from "../pages/home/home";
@@ -59,7 +60,8 @@ import { TodoServiceProvider } from "../services/todos.service";
     AngularFireAuth,
     FileChooser,
     File,
-    FilePath
+    FilePath,
+    SpeechRecognition
   ]
 })
 export class AppModule {}

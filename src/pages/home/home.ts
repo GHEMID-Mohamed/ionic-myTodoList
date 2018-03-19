@@ -8,13 +8,15 @@ import {
 import { ListPage } from "../list/list";
 import { TodoList } from "../../models/TodoList";
 import { AngularFireAuth } from "angularfire2/auth";
+import { SpeechRecognition } from "@ionic-native/speech-recognition";
+import { ChangeDetectorRef } from "@angular/core";
 
 import { generateId } from "../../utils";
 import firebase from "firebase";
 
 import { TodoServiceProvider } from "../../services/todos.service";
 import { ProfilPage } from "../profil/profil";
-import { Toast } from '@ionic-native/toast';
+import { Toast } from "@ionic-native/toast";
 
 import "rxjs/Rx";
 
@@ -34,10 +36,10 @@ export class HomePage {
     public navParams: NavParams,
     public todoServiceProvider: TodoServiceProvider,
     public alertCtrl: AlertController,
-    public toast: Toast
-  ) {
-    //this.toast.show(this.todoServiceProvider.getUserId(), '5000', 'center')
-  }
+    public toast: Toast,
+    private speechRecognition: SpeechRecognition,
+    private cd: ChangeDetectorRef
+  ) {}
 
   getLists() {
     this.listsPending = true;
@@ -58,6 +60,34 @@ export class HomePage {
     });
   }
 
+  private getPermission() {
+    this.speechRecognition.hasPermission().then((hasPermission: boolean) => {
+      if (!hasPermission) {
+        this.speechRecognition
+          .requestPermission()
+          .then(() => console.log("Granted"), () => console.log("Denied"));
+      } else {
+        console.log("has permission");
+      }
+    });
+  }
+
+  private startListening() {
+    let options = {
+      language: "fr-FR"
+    };
+
+    //get permission
+    this.getPermission();
+    this.speechRecognition.startListening(options).subscribe(
+      matches => {
+        this.todoServiceProvider.AddList(matches.pop());
+        this.cd.detectChanges();
+      },
+      error => console.log(error)
+    );
+  }
+
   onAddList() {
     let prompt = this.alertCtrl.create({
       title: "Add list",
@@ -72,6 +102,12 @@ export class HomePage {
         {
           text: "Cancel",
           handler: data => {}
+        },
+        {
+          text: "listen",
+          handler: data => {
+            this.startListening();
+          }
         },
         {
           text: "Add",
@@ -107,7 +143,7 @@ export class HomePage {
         {
           text: "Agree",
           handler: () => {
-            this.todoServiceProvider.deleteList(uuid)
+            this.todoServiceProvider.deleteList(uuid);
           }
         }
       ]
