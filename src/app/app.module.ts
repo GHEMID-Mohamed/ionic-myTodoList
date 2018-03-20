@@ -8,6 +8,7 @@ import { SplashScreen } from "@ionic-native/splash-screen";
 import { StatusBar } from "@ionic-native/status-bar";
 import { AngularFireAuth } from "angularfire2/auth";
 import { SpeechRecognition } from "@ionic-native/speech-recognition";
+import { NFC, Ndef } from "@ionic-native/nfc";
 
 import { MyApp } from "./app.component";
 import { HomePage } from "../pages/home/home";
@@ -17,7 +18,6 @@ import { NewTodoPage } from "../pages/new-todo/new-todo";
 import { EditTodoPage } from "../pages/edit-todo/edit-todo";
 import { AuthentificationPage } from "../pages/authentification/authentification";
 import { ProfilPage } from "../pages/profil/profil";
-
 import { FileChooser } from "@ionic-native/file-chooser";
 import { FilePath } from "@ionic-native/file-path";
 import { File } from "@ionic-native/file";
@@ -61,7 +61,9 @@ import { TodoServiceProvider } from "../services/todos.service";
     FileChooser,
     File,
     FilePath,
-    SpeechRecognition
+    SpeechRecognition,
+    NFC,
+    Ndef
   ]
 })
 export class AppModule {}

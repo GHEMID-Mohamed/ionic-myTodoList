@@ -75,7 +75,7 @@ export class ListPage {
         this.todoServiceProvider
           .shareList(email, this.listUuid, this.name, modeShare)
           .then(listshared => {
-            console.log(listshared)
+            console.log(listshared);
             if (listshared) {
               let alert = this.alertCtrl.create({
                 title: "List shared",

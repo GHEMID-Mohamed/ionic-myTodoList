@@ -1,16 +1,11 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar hideBackButton="true">
     <ion-title>
       My todoLists
     </ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="onAddList()">
-        <ion-icon name="add"></ion-icon>
-      </button>
-    </ion-buttons>
-    <ion-buttons end>
-      <button ion-button icon-only (click)="onSeeProfile()">
-        <ion-icon name="person"></ion-icon>
+      <button ion-button menuToggle icon-only float-right>
+        <ion-icon name='menu'></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -28,11 +23,34 @@
             <h2 class="text">{{ list.name }}</h2>
           </ion-col>
           <ion-col>
-            <ion-icon class="iconSize" name="trash" color="dark" float-right (click)="onDeleteList(list.uuid)"></ion-icon>
-            <ion-icon style="padding-right:40px" class="iconSize" name="create" color="dark" float-right (click)="onEditList(list.uuid)"></ion-icon>
+            <ion-icon class="iconSize" name="md-more" color="dark" float-right (click)="presentActionSheet(list.uuid)"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
   </ion-list>
+
 </ion-content>
+
+
+<ion-menu [content]="content" persistent="true">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <button ion-item icon-left (click)="onSeeProfile()">
+        <ion-icon name="person"></ion-icon>
+        Account
+      </button>
+      <button ion-item icon-left (click)="onAddList()">
+        <ion-icon name="add"></ion-icon>
+        Add list
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-nav #content [root]="rootPage"></ion-nav>

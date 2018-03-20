@@ -25,6 +25,7 @@
     "@ionic-native/file-chooser": "^4.5.3",
     "@ionic-native/file-path": "^4.5.3",
     "@ionic-native/google-plus": "^4.5.3",
+    "@ionic-native/nfc": "^4.6.0",
     "@ionic-native/speech-recognition": "^4.5.3",
     "@ionic-native/splash-screen": "4.4.0",
     "@ionic-native/status-bar": "4.4.0",
@@ -47,6 +48,7 @@
     "ionic": "^3.20.0",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
+    "phonegap-nfc": "^0.7.1",
     "rxjs": "5.5.2",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.18"
@@ -70,7 +72,8 @@
       "cordova-plugin-x-toast": {},
       "cordova-plugin-filepath": {},
       "cordova-plugin-file": {},
-      "cordova-plugin-speechrecognition": {}
+      "cordova-plugin-speechrecognition": {},
+      "phonegap-nfc": {}
     },
     "platforms": [
       "android"

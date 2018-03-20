@@ -3,7 +3,9 @@ import {
   IonicPage,
   NavController,
   NavParams,
-  AlertController
+  AlertController,
+  MenuController,
+  ActionSheetController
 } from "ionic-angular";
 import { ListPage } from "../list/list";
 import { TodoList } from "../../models/TodoList";
@@ -38,8 +40,12 @@ export class HomePage {
     public alertCtrl: AlertController,
     public toast: Toast,
     private speechRecognition: SpeechRecognition,
-    private cd: ChangeDetectorRef
-  ) {}
+    private cd: ChangeDetectorRef,
+    menu: MenuController,
+    public actionSheetCtrl: ActionSheetController
+  ) {
+    menu.enable(true);
+  }
 
   getLists() {
     this.listsPending = true;
@@ -175,5 +181,31 @@ export class HomePage {
       ]
     });
     confirm.present();
+  }
+
+  presentActionSheet(listUuid: string) {
+    let actionSheet = this.actionSheetCtrl.create({
+      title: "List options",
+      buttons: [
+        {
+          text: "Edit",
+          role: "destructive",
+          handler: () => {
+            this.onEditList(listUuid);
+          },
+          icon: "create"
+        },
+        {
+          text: "Delete",
+          role: "destructive",
+          handler: () => {
+            this.onDeleteList(listUuid);
+          },
+          icon: "trash"
+        }
+      ]
+    });
+
+    actionSheet.present();
   }
 }
