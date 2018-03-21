@@ -91,7 +91,7 @@ export class Item {
   }
 
   displayImage() {
-    this.showToast(this.itemData.uuid, 'top')
+    this.showToast(this.itemData.uuid, "top");
     this.firestore
       .ref()
       .child(this.itemData.uuid)

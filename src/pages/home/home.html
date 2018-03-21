@@ -15,6 +15,11 @@
   <div text-center>
     <ion-spinner *ngIf="listsPending"></ion-spinner>
   </div>
+  <ion-fab bottom right>
+      <button ion-fab color="secondary" (click)="openNewList()">
+          <ion-icon name='add'></ion-icon>
+      </button>
+    </ion-fab>
   <ion-list class="list-style" *ngIf="!listsPending">
     <ion-item class="item-style" *ngFor="let list of lists">
       <ion-grid>
@@ -23,7 +28,7 @@
             <h2 class="text">{{ list.name }}</h2>
           </ion-col>
           <ion-col>
-            <ion-icon class="iconSize" name="md-more" color="dark" float-right (click)="presentActionSheet(list.uuid)"></ion-icon>
+            <ion-icon class="iconSize" name="md-more" color="dark" float-right (click)="presentActionSheet(list.uuid, list.name)"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -44,10 +49,6 @@
       <button ion-item icon-left (click)="onSeeProfile()">
         <ion-icon name="person"></ion-icon>
         Account
-      </button>
-      <button ion-item icon-left (click)="onAddList()">
-        <ion-icon name="add"></ion-icon>
-        Add list
       </button>
     </ion-list>
   </ion-content>

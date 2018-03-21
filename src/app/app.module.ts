@@ -21,6 +21,8 @@ import { ProfilPage } from "../pages/profil/profil";
 import { FileChooser } from "@ionic-native/file-chooser";
 import { FilePath } from "@ionic-native/file-path";
 import { File } from "@ionic-native/file";
+import { NewListPage } from "../pages/new-list/new-list";
+import { EditListPage } from "../pages/edit-list/edit-list";
 
 import { TodoServiceProvider } from "../services/todos.service";
 
@@ -33,7 +35,9 @@ import { TodoServiceProvider } from "../services/todos.service";
     MyApp,
     NewTodoPage,
     ProfilPage,
-    HomePage
+    HomePage,
+    NewListPage,
+    EditListPage
   ],
   imports: [
     BrowserModule,
@@ -50,7 +54,9 @@ import { TodoServiceProvider } from "../services/todos.service";
     MyApp,
     NewTodoPage,
     ProfilPage,
-    HomePage
+    HomePage,
+    NewListPage,
+    EditListPage
   ],
   providers: [
     StatusBar,

@@ -10,8 +10,8 @@ import {
 import { ListPage } from "../list/list";
 import { TodoList } from "../../models/TodoList";
 import { AngularFireAuth } from "angularfire2/auth";
-import { SpeechRecognition } from "@ionic-native/speech-recognition";
-import { ChangeDetectorRef } from "@angular/core";
+import { NewListPage } from "../new-list/new-list";
+import { EditListPage } from "../edit-list/edit-list";
 
 import { generateId } from "../../utils";
 import firebase from "firebase";
@@ -39,8 +39,6 @@ export class HomePage {
     public todoServiceProvider: TodoServiceProvider,
     public alertCtrl: AlertController,
     public toast: Toast,
-    private speechRecognition: SpeechRecognition,
-    private cd: ChangeDetectorRef,
     menu: MenuController,
     public actionSheetCtrl: ActionSheetController
   ) {
@@ -66,34 +64,6 @@ export class HomePage {
     });
   }
 
-  private getPermission() {
-    this.speechRecognition.hasPermission().then((hasPermission: boolean) => {
-      if (!hasPermission) {
-        this.speechRecognition
-          .requestPermission()
-          .then(() => console.log("Granted"), () => console.log("Denied"));
-      } else {
-        console.log("has permission");
-      }
-    });
-  }
-
-  private startListening() {
-    let options = {
-      language: "fr-FR"
-    };
-
-    //get permission
-    this.getPermission();
-    this.speechRecognition.startListening(options).subscribe(
-      matches => {
-        this.todoServiceProvider.AddList(matches.pop());
-        this.cd.detectChanges();
-      },
-      error => console.log(error)
-    );
-  }
-
   onAddList() {
     let prompt = this.alertCtrl.create({
       title: "Add list",
@@ -110,12 +80,6 @@ export class HomePage {
           handler: data => {}
         },
         {
-          text: "listen",
-          handler: data => {
-            this.startListening();
-          }
-        },
-        {
           text: "Add",
           handler: data => {
             this.todoServiceProvider.AddList(data.title);
@@ -126,30 +90,11 @@ export class HomePage {
     prompt.present();
   }
 
-  onEditList(listUuid: string) {
-    let prompt = this.alertCtrl.create({
-      title: "Edit list",
-      message: "Enter the new name of the list",
-      inputs: [
-        {
-          name: "name",
-          placeholder: "Title"
-        }
-      ],
-      buttons: [
-        {
-          text: "Cancel",
-          handler: data => {}
-        },
-        {
-          text: "Add",
-          handler: data => {
-            this.todoServiceProvider.editList(data.name, listUuid);
-          }
-        }
-      ]
+  onEditList(listUuid: string, listName: string) {
+    this.navCtrl.push(EditListPage, {
+      listUuid,
+      listName
     });
-    prompt.present();
   }
 
   onSeeProfile() {
@@ -183,7 +128,7 @@ export class HomePage {
     confirm.present();
   }
 
-  presentActionSheet(listUuid: string) {
+  presentActionSheet(listUuid: string, name: string) {
     let actionSheet = this.actionSheetCtrl.create({
       title: "List options",
       buttons: [
@@ -191,9 +136,17 @@ export class HomePage {
           text: "Edit",
           role: "destructive",
           handler: () => {
-            this.onEditList(listUuid);
+            this.onEditList(listUuid, name);
           },
           icon: "create"
+        },
+        {
+          text: "Share",
+          role: "destructive",
+          handler: () => {
+            this.shareList(listUuid, name);
+          },
+          icon: "share"
         },
         {
           text: "Delete",
@@ -207,5 +160,82 @@ export class HomePage {
     });
 
     actionSheet.present();
+  }
+
+  showShareMode(email: string, listUuid: string, name: string) {
+    let alert = this.alertCtrl.create();
+    alert.setTitle("share mode");
+
+    alert.addInput({
+      type: "radio",
+      label: "Copy",
+      value: "copy",
+      checked: false
+    });
+
+    alert.addInput({
+      type: "radio",
+      label: "Realtime share",
+      value: "share",
+      checked: true
+    });
+
+    alert.addButton("Cancel");
+    alert.addButton({
+      text: "OK",
+      handler: modeShare => {
+        this.todoServiceProvider
+          .shareList(email, listUuid, name, modeShare)
+          .then(listshared => {
+            console.log(listshared);
+            if (listshared) {
+              let alert = this.alertCtrl.create({
+                title: "List shared",
+                subTitle: "Your list has been successfully shared",
+                buttons: ["OK"]
+              });
+              alert.present();
+            } else {
+              let alert = this.alertCtrl.create({
+                title: "Error",
+                subTitle: "This user does not exit or it is not granted",
+                buttons: ["OK"]
+              });
+              alert.present();
+            }
+          });
+      }
+    });
+    alert.present();
+  }
+
+  shareList(listUuid: string, name: string) {
+    let prompt = this.alertCtrl.create({
+      title: "Share list",
+      message: "Enter the email of the user who you want to share this list",
+      inputs: [
+        {
+          name: "email",
+          placeholder: "user email"
+        }
+      ],
+      buttons: [
+        {
+          text: "Cancel",
+          handler: data => {}
+        },
+        {
+          text: "share",
+          handler: data => {
+            this.showShareMode(data.email, listUuid, name);
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
+
+  openNewList() {
+    this.navCtrl.push(NewListPage);
   }
 }

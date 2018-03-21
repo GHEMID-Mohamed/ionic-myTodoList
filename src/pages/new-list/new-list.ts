@@ -1,45 +1,36 @@
-import { Component } from "@angular/core"
-import { NavController, NavParams } from "ionic-angular"
-import { TodoServiceProvider } from "../../services/todos.service"
-import { Validators, FormBuilder, FormGroup } from "@angular/forms"
-import { TodoItem } from "../../models/TodoItem"
-import { generateId } from "../../utils"
+import { Component } from "@angular/core";
+import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 import { SpeechRecognition } from "@ionic-native/speech-recognition";
 import { ChangeDetectorRef } from "@angular/core";
 
+import { TodoServiceProvider } from "../../services/todos.service";
+
+@IonicPage()
 @Component({
-  selector: "page-new-todo",
-  templateUrl: "new-todo.html"
+  selector: "page-new-list",
+  templateUrl: "new-list.html"
 })
-export class NewTodoPage {
-  todoform: any
-  listUuid: string
-  todoItem: TodoItem = { name: "", complete: false, desc: "", uuid: "" }
+export class NewListPage {
+  todoform: any;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public todoServiceProvider: TodoServiceProvider,
     private formBuilder: FormBuilder,
+    public todoServiceProvider: TodoServiceProvider,
     private speechRecognition: SpeechRecognition,
     private cd: ChangeDetectorRef
   ) {
     this.todoform = this.formBuilder.group({
-      title: ["", Validators.required],
-      description: [""]
-    })
-    this.listUuid = navParams.get("listUuid")
+      title: ["", Validators.required]
+    });
   }
 
-  onAddTodo() {
-    this.todoItem.name = this.todoform.value.title
-    this.todoItem.desc = this.todoform.value.description
-    this.todoItem.complete = false
-    this.todoItem.uuid = generateId()
-    this.todoServiceProvider.addTodo(this.listUuid, this.todoItem)
+  onAddList() {
+    this.todoServiceProvider.AddList(this.todoform.value.title);
     this.navCtrl.pop()
   }
-
 
   private getPermission() {
     this.speechRecognition.hasPermission().then((hasPermission: boolean) => {

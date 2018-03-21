@@ -8,6 +8,11 @@
 
 
 <ion-content padding>
+  <ion-fab center middle>
+    <button ion-fab color="primary" (click)="startListening()">
+      <ion-icon name="microphone"></ion-icon>
+    </button>
+  </ion-fab>
   <form [formGroup]="todoform" (ngSubmit)="onAddTodo()">
     <ion-item>
       <ion-label>Todo</ion-label>
@@ -17,6 +22,6 @@
       <ion-label>Description</ion-label>
       <ion-textarea formControlName="description"></ion-textarea>
     </ion-item>
-    <button ion-button float-right type="submit">Add</button>
+    <button ion-button block type="submit">Add</button>
   </form>
 </ion-content>
