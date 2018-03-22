@@ -56,7 +56,7 @@ export class EditListPage {
     this.getPermission();
     this.speechRecognition.startListening(options).subscribe(
       matches => {
-        this.todoForm.value.title(matches.pop());
+        this.todoForm.controls["title"].setValue(matches.pop());
         this.cd.detectChanges();
       },
       error => console.log(error)

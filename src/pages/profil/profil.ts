@@ -27,17 +27,8 @@ export class ProfilPage {
   }
 
   logout() {
-    this.afAuth.auth.onAuthStateChanged(user => {
-      if (!user) {
-        this.googlePlus.logout().then(() => {
-          this.navCtrl.popToRoot();
-        });
-      } else {
-        this.afAuth.auth.signOut().then(() => {
-          this.todoServiceProvider.reinitialize();
-          this.navCtrl.popToRoot();
-        });
-      }
+    this.afAuth.auth.signOut().then(() => {
+      this.navCtrl.popToRoot();
     });
   }
 }

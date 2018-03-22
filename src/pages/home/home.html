@@ -16,10 +16,10 @@
     <ion-spinner *ngIf="listsPending"></ion-spinner>
   </div>
   <ion-fab bottom right>
-      <button ion-fab color="secondary" (click)="openNewList()">
-          <ion-icon name='add'></ion-icon>
-      </button>
-    </ion-fab>
+    <button ion-fab color="secondary" (click)="openNewList()">
+      <ion-icon name='add'></ion-icon>
+    </button>
+  </ion-fab>
   <ion-list class="list-style" *ngIf="!listsPending">
     <ion-item class="item-style" *ngFor="let list of lists">
       <ion-grid>
@@ -49,6 +49,10 @@
       <button ion-item icon-left (click)="onSeeProfile()">
         <ion-icon name="person"></ion-icon>
         Account
+      </button>
+      <button ion-item (click)="logout()">
+        <ion-icon name="log-out"></ion-icon>
+        Logout
       </button>
     </ion-list>
   </ion-content>

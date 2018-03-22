@@ -60,7 +60,7 @@ export class NewTodoPage {
     this.getPermission();
     this.speechRecognition.startListening(options).subscribe(
       matches => {
-        this.todoform.value.title(matches.pop());
+        this.todoform.controls['title'].setValue(matches.pop());
         this.cd.detectChanges();
       },
       error => console.log(error)

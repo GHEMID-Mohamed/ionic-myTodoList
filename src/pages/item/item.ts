@@ -41,14 +41,22 @@ export class Item {
     private toastCtrl: ToastController
   ) {}
 
-  ionViewDidLoad() {
-    this.displayImage();
+  ngOnInit() {
+    this.firestore
+      .ref()
+      .child(this.itemData.uuid)
+      .getDownloadURL()
+      .then(url => {
+        this.zone.run(() => {
+          this.imgsource = url;
+        });
+      });
   }
 
   showToast(msg, position) {
     let toast = this.toastCtrl.create({
       message: msg,
-      duration: 3000,
+      duration: 5000,
       position: position
     });
 
@@ -91,14 +99,13 @@ export class Item {
   }
 
   displayImage() {
-    this.showToast(this.itemData.uuid, "top");
     this.firestore
       .ref()
       .child(this.itemData.uuid)
       .getDownloadURL()
       .then(url => {
         this.zone.run(() => {
-          this.showToast("image uploaded", "bottom");
+          this.showToast("Image loaded", "bottom");
           this.imgsource = url;
         });
       });

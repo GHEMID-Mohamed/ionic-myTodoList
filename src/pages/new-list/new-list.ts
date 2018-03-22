@@ -29,7 +29,7 @@ export class NewListPage {
 
   onAddList() {
     this.todoServiceProvider.AddList(this.todoform.value.title);
-    this.navCtrl.pop()
+    this.navCtrl.pop();
   }
 
   private getPermission() {
@@ -51,7 +51,7 @@ export class NewListPage {
     this.getPermission();
     this.speechRecognition.startListening(options).subscribe(
       matches => {
-        this.todoform.value.title(matches.pop());
+        this.todoform.controls['title'].setValue(matches.pop());
         this.cd.detectChanges();
       },
       error => console.log(error)

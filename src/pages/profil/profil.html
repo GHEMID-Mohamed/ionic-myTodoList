@@ -1,24 +1,21 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>profil</ion-title>
+    <ion-title>Profile</ion-title>
   </ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
 
-  <ion-card>
-    <img *ngIf="user.photoURL" src="{{user.photoURL}}" />
-    <ion-card-content>
-      <ion-card-title>
-        {{user.email}}
-      </ion-card-title>
-    </ion-card-content>
-  </ion-card>
-  <br />
+  <ion-item>
+    <ion-thumbnail item-start>
+      <img *ngIf="user.photoURL" src="{{user.photoURL}}" />
+      <ion-icon *ngIf="!user.photoURL" name="md-contact" class="user-icon"></ion-icon>
+    </ion-thumbnail>
+    <h2>{{user.email}}</h2>
+  </ion-item>
   <button ion-button block color="danger" (click)="logout()">
     <ion-icon name="log-out"></ion-icon>
     Logout
   </button>
-
 </ion-content>

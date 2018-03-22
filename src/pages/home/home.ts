@@ -7,15 +7,14 @@ import {
   MenuController,
   ActionSheetController
 } from "ionic-angular";
+import firebase from "firebase";
 import { ListPage } from "../list/list";
 import { TodoList } from "../../models/TodoList";
 import { AngularFireAuth } from "angularfire2/auth";
 import { NewListPage } from "../new-list/new-list";
 import { EditListPage } from "../edit-list/edit-list";
-
 import { generateId } from "../../utils";
-import firebase from "firebase";
-
+import { GooglePlus } from "@ionic-native/google-plus";
 import { TodoServiceProvider } from "../../services/todos.service";
 import { ProfilPage } from "../profil/profil";
 import { Toast } from "@ionic-native/toast";
@@ -26,7 +25,7 @@ import "rxjs/Rx";
 @Component({
   selector: "page-home",
   templateUrl: "home.html",
-  providers: [Toast]
+  providers: [Toast, GooglePlus]
 })
 export class HomePage {
   lists: TodoList[] = [];
@@ -39,8 +38,9 @@ export class HomePage {
     public todoServiceProvider: TodoServiceProvider,
     public alertCtrl: AlertController,
     public toast: Toast,
-    menu: MenuController,
-    public actionSheetCtrl: ActionSheetController
+    public menu: MenuController,
+    public actionSheetCtrl: ActionSheetController,
+    public googlePlus: GooglePlus
   ) {
     menu.enable(true);
   }
@@ -144,7 +144,7 @@ export class HomePage {
           text: "Share",
           role: "destructive",
           handler: () => {
-            this.shareList(listUuid, name);
+            this.showShareMode(listUuid, name);
           },
           icon: "share"
         },
@@ -162,7 +162,7 @@ export class HomePage {
     actionSheet.present();
   }
 
-  showShareMode(email: string, listUuid: string, name: string) {
+  showShareMode(listUuid: string, name: string) {
     let alert = this.alertCtrl.create();
     alert.setTitle("share mode");
 
@@ -184,32 +184,13 @@ export class HomePage {
     alert.addButton({
       text: "OK",
       handler: modeShare => {
-        this.todoServiceProvider
-          .shareList(email, listUuid, name, modeShare)
-          .then(listshared => {
-            console.log(listshared);
-            if (listshared) {
-              let alert = this.alertCtrl.create({
-                title: "List shared",
-                subTitle: "Your list has been successfully shared",
-                buttons: ["OK"]
-              });
-              alert.present();
-            } else {
-              let alert = this.alertCtrl.create({
-                title: "Error",
-                subTitle: "This user does not exit or it is not granted",
-                buttons: ["OK"]
-              });
-              alert.present();
-            }
-          });
+        this.shareList(listUuid, name, modeShare);
       }
     });
     alert.present();
   }
 
-  shareList(listUuid: string, name: string) {
+  shareList(listUuid: string, name: string, modeShare: string) {
     let prompt = this.alertCtrl.create({
       title: "Share list",
       message: "Enter the email of the user who you want to share this list",
@@ -227,7 +208,26 @@ export class HomePage {
         {
           text: "share",
           handler: data => {
-            this.showShareMode(data.email, listUuid, name);
+            this.todoServiceProvider
+              .shareList(data.email, listUuid, name, modeShare)
+              .then(listshared => {
+                console.log(listshared);
+                if (listshared) {
+                  let alert = this.alertCtrl.create({
+                    title: "List shared",
+                    subTitle: "Your list has been successfully shared",
+                    buttons: ["OK"]
+                  });
+                  alert.present();
+                } else {
+                  let alert = this.alertCtrl.create({
+                    title: "Error",
+                    subTitle: "This user does not exit or it is not granted",
+                    buttons: ["OK"]
+                  });
+                  alert.present();
+                }
+              });
           }
         }
       ]
@@ -237,5 +237,11 @@ export class HomePage {
 
   openNewList() {
     this.navCtrl.push(NewListPage);
+  }
+
+  logout() {
+    this.afAuth.auth.signOut().then(() => {
+      this.navCtrl.popToRoot();
+    });
   }
 }
