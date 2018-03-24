@@ -18,6 +18,7 @@ import { GooglePlus } from "@ionic-native/google-plus";
 import { TodoServiceProvider } from "../../services/todos.service";
 import { ProfilPage } from "../profil/profil";
 import { Toast } from "@ionic-native/toast";
+import { SharedListsPage } from "../shared-lists/shared-lists";
 
 import "rxjs/Rx";
 
@@ -30,6 +31,8 @@ import "rxjs/Rx";
 export class HomePage {
   lists: TodoList[] = [];
   listsPending: boolean = true;
+  sharedLists: any = []
+  notification: boolean = true
 
   constructor(
     public afAuth: AngularFireAuth,
@@ -45,11 +48,23 @@ export class HomePage {
     menu.enable(true);
   }
 
+  onNotificationCLick() {
+    this.notification = false
+    this.navCtrl.push(SharedListsPage);
+  }
+
   getLists() {
     this.listsPending = true;
     this.todoServiceProvider.getList().subscribe(lists => {
       this.lists = lists;
       this.listsPending = false;
+      this.getSharedLists()
+    });
+  }
+
+  getSharedLists() {
+    this.todoServiceProvider.getSharedLists().subscribe(lists => {
+      this.sharedLists = lists
     });
   }
 
@@ -168,29 +183,32 @@ export class HomePage {
 
     alert.addInput({
       type: "radio",
-      label: "Copy",
-      value: "copy",
-      checked: false
+      label: "Share with E-mail",
+      value: "email",
+      checked: true
     });
 
     alert.addInput({
       type: "radio",
-      label: "Realtime share",
-      value: "share",
-      checked: true
+      label: "Share with QrCode",
+      value: "qrcode",
+      checked: false
     });
 
     alert.addButton("Cancel");
     alert.addButton({
       text: "OK",
       handler: modeShare => {
-        this.shareList(listUuid, name, modeShare);
+        if (modeShare === "email") {
+          this.shareListWithEmail(listUuid, name, modeShare);
+        } else if (modeShare === "qrcode") {
+        }
       }
     });
     alert.present();
   }
 
-  shareList(listUuid: string, name: string, modeShare: string) {
+  shareListWithEmail(listUuid: string, name: string, modeShare: string) {
     let prompt = this.alertCtrl.create({
       title: "Share list",
       message: "Enter the email of the user who you want to share this list",
@@ -237,6 +255,10 @@ export class HomePage {
 
   openNewList() {
     this.navCtrl.push(NewListPage);
+  }
+
+  onSeeSharedLists() {
+    this.navCtrl.push(SharedListsPage);
   }
 
   logout() {

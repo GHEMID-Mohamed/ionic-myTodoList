@@ -50,7 +50,9 @@ export class Item {
         this.zone.run(() => {
           this.imgsource = url;
         });
-      });
+      }).catch(error => {
+        console.log('object not found')
+      })
   }
 
   showToast(msg, position) {

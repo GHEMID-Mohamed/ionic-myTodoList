@@ -16,6 +16,7 @@ import { Item } from "../pages/item/item";
 import { ListPage } from "../pages/list/list";
 import { NewTodoPage } from "../pages/new-todo/new-todo";
 import { EditTodoPage } from "../pages/edit-todo/edit-todo";
+import { SharedListsPage } from "../pages/shared-lists/shared-lists";
 import { AuthentificationPage } from "../pages/authentification/authentification";
 import { ProfilPage } from "../pages/profil/profil";
 import { FileChooser } from "@ionic-native/file-chooser";
@@ -37,7 +38,8 @@ import { TodoServiceProvider } from "../services/todos.service";
     ProfilPage,
     HomePage,
     NewListPage,
-    EditListPage
+    EditListPage,
+    SharedListsPage
   ],
   imports: [
     BrowserModule,
@@ -56,7 +58,8 @@ import { TodoServiceProvider } from "../services/todos.service";
     ProfilPage,
     HomePage,
     NewListPage,
-    EditListPage
+    EditListPage,
+    SharedListsPage
   ],
   providers: [
     StatusBar,

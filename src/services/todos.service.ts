@@ -15,7 +15,8 @@ import { first } from "rxjs/operators";
 export class TodoServiceProvider {
   private data: TodoList[] = [];
   private firstLoad: boolean = true;
-  private userId: string
+  private userId: string;
+  private sharedLists: Array<object> = [];
 
   constructor(private afAuth: AngularFireAuth) {}
 
@@ -30,6 +31,10 @@ export class TodoServiceProvider {
           usersSap => {
             const userLists = usersSap.val().lists;
             this.convertData(listsSnap, userLists);
+
+            if (usersSap.val().sharedLists !== undefined) {
+              this.convertSharedLists(usersSap.val().sharedLists);
+            }
           },
           this
         );
@@ -48,12 +53,44 @@ export class TodoServiceProvider {
     );
   }
 
+  acceptSharedList(list: any): any {
+    return firebase
+      .database()
+      .ref(`users/${this.userId}/lists/${list.listUuid}`)
+      .set({
+        name: list.name
+      })
+      .then(() =>
+        firebase
+          .database()
+          .ref(`users/${this.userId}/sharedLists/${list.listUuid}`)
+          .remove()
+      );
+  }
+
+  declineSharedList(list: any): any {
+    return firebase
+      .database()
+      .ref(`users/${this.userId}/sharedLists/${list.listUuid}`)
+      .remove();
+  }
+
+  convertSharedLists(sharedLists: any) {
+    this.sharedLists.length = 0;
+    for (let listUuid in sharedLists) {
+      this.sharedLists.push({
+        listUuid,
+        name: sharedLists[listUuid].name
+      });
+    }
+  }
+
   setUserId(userId: string) {
-    this.userId = userId
+    this.userId = userId;
   }
 
   getUserId() {
-    return this.userId
+    return this.userId;
   }
 
   listenLists(lists: any) {
@@ -113,7 +150,7 @@ export class TodoServiceProvider {
   }
 
   async editList(nameList, uuidList) {
-    const items = await this.getItemsList(uuidList) 
+    const items = await this.getItemsList(uuidList);
     firebase
       .database()
       .ref(`myLists/${uuidList}`)
@@ -125,6 +162,10 @@ export class TodoServiceProvider {
 
   public getList(): Observable<TodoList[]> {
     return Observable.of(this.data);
+  }
+
+  public getSharedLists(): Observable<Array<any>> {
+    return Observable.of(this.sharedLists);
   }
 
   public deleteList(uuid: string) {
@@ -183,7 +224,7 @@ export class TodoServiceProvider {
 
   shareList(email, listUuid, listName, modeShare) {
     let userExists = false;
-    if (modeShare === "share") {
+    if (modeShare === "email") {
       let usersRef = firebase.database().ref();
       return usersRef
         .child("users")
@@ -195,7 +236,7 @@ export class TodoServiceProvider {
             const userId = Object.keys(snap.val()).pop();
             firebase
               .database()
-              .ref(`users/${userId}/lists/${listUuid}`)
+              .ref(`users/${userId}/sharedLists/${listUuid}`)
               .set({
                 name: listName
               });
@@ -203,42 +244,7 @@ export class TodoServiceProvider {
           }
           return userExists;
         });
-    } else if (modeShare === "copy") {
-      let usersRef = firebase.database().ref();
-      return usersRef
-        .child("users")
-        .orderByChild("email")
-        .equalTo(email)
-        .once("value")
-        .then(snap => {
-          if (snap.val() !== null) {
-            const userId = Object.keys(snap.val()).pop();
-            this.getItemsList(listUuid).then(items => {
-              const newListUuid = firebase
-                .database()
-                .ref()
-                .child("myLists")
-                .push().key;
-
-              firebase
-                .database()
-                .ref(`myLists/${newListUuid}`)
-                .set({
-                  name: listName,
-                  items
-                });
-
-              firebase
-                .database()
-                .ref(`users/${userId}/lists/${newListUuid}`)
-                .set({
-                  listName
-                });
-              userExists = true;
-            });
-          }
-          return userExists;
-        });
+    } else if (modeShare === "qrcode") {
     }
   }
 

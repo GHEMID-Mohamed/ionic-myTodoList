@@ -20,6 +20,11 @@
       <ion-icon name='add'></ion-icon>
     </button>
   </ion-fab>
+  <ion-fab *ngIf="sharedLists.length > 0  && notification" top right edge>
+    <button ion-fab mini color="light" (click)="onNotificationCLick()">
+      <ion-icon name='md-notifications' class="notification-icon"></ion-icon>
+    </button>
+  </ion-fab>
   <ion-list class="list-style" *ngIf="!listsPending">
     <ion-item class="item-style" *ngFor="let list of lists">
       <ion-grid>
@@ -49,6 +54,11 @@
       <button ion-item icon-left (click)="onSeeProfile()">
         <ion-icon name="person"></ion-icon>
         Account
+      </button>
+      <button ion-item icon-left (click)="onSeeSharedLists()">
+        <ion-icon name="share"></ion-icon>
+        Shared lists &nbsp;
+        <ion-icon *ngIf="sharedLists.length > 0 && notification" name='md-notifications' class="notification-icon"></ion-icon>
       </button>
       <button ion-item (click)="logout()">
         <ion-icon name="log-out"></ion-icon>
