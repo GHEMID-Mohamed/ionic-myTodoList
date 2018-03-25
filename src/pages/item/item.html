@@ -5,10 +5,11 @@
   <ion-card-content>
     {{ itemData.desc }}
     <br />
-    <img src="{{imgsource}}">
+    <img *ngIf="imgsource" src="{{imgsource}}">
+    <img *ngIf="!imgsource" src="assets/imgs/loading.gif" alt="loading" />
     <ion-item>
       <ion-label>Done</ion-label>
-      <ion-checkbox color="dark" [(ngModel)]="complete"></ion-checkbox>
+      <ion-checkbox color="dark" [(ngModel)]="complete" (click)="setCompleteTodo()"></ion-checkbox>
     </ion-item>
     <ion-grid>
       <ion-row>

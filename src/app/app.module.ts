@@ -24,6 +24,7 @@ import { FilePath } from "@ionic-native/file-path";
 import { File } from "@ionic-native/file";
 import { NewListPage } from "../pages/new-list/new-list";
 import { EditListPage } from "../pages/edit-list/edit-list";
+import { ConfirmPage } from "../pages/confirm/confirm"
 
 import { TodoServiceProvider } from "../services/todos.service";
 
@@ -39,7 +40,8 @@ import { TodoServiceProvider } from "../services/todos.service";
     HomePage,
     NewListPage,
     EditListPage,
-    SharedListsPage
+    SharedListsPage,
+    ConfirmPage
   ],
   imports: [
     BrowserModule,
@@ -59,7 +61,8 @@ import { TodoServiceProvider } from "../services/todos.service";
     HomePage,
     NewListPage,
     EditListPage,
-    SharedListsPage
+    SharedListsPage,
+    ConfirmPage
   ],
   providers: [
     StatusBar,

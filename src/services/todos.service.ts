@@ -25,6 +25,7 @@ export class TodoServiceProvider {
     refLists.on(
       "value",
       listsSnap => {
+        console.log("triggered");
         let refUsers = firebase.database().ref(`users/${this.userId}`);
         refUsers.once(
           "value",
@@ -180,8 +181,19 @@ export class TodoServiceProvider {
       .remove();
   }
 
-  public getTodos(uuid: String) {
+  public getTodos(uuid: String): Observable<any> {
     return Observable.of(this.data.find(d => d.uuid == uuid).items);
+  }
+
+  public setItemComplete(
+    listUuid: string,
+    itemUuid: string,
+    complete: boolean
+  ) {
+    firebase
+      .database()
+      .ref(`myLists/${listUuid}/items/${itemUuid}/complete`)
+      .set(complete);
   }
 
   public editTodo(listUuid: String, editedItem: TodoItem) {
@@ -191,8 +203,8 @@ export class TodoServiceProvider {
       .set(editedItem);
   }
 
-  public deleteTodo(listUuid: String, uuid: String) {
-    firebase
+  public deleteTodo(listUuid: String, uuid: String): Promise<any> {
+    return firebase
       .database()
       .ref(`myLists/${listUuid}/items/${uuid}`)
       .remove();

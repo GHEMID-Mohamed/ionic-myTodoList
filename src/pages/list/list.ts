@@ -19,7 +19,7 @@ import firebase from "firebase";
 export class ListPage {
   name: string;
   listUuid: string;
-  todoItems: TodoItem[];
+  todoItems: Array<TodoItem> = [];
   ref: any;
   RadioOpen: boolean;
   connexionMode: string;
@@ -38,9 +38,9 @@ export class ListPage {
   }
 
   getTodos() {
-    this.todoServiceProvider
-      .getTodos(this.listUuid)
-      .subscribe(todos => (this.todoItems = todos));
+    this.todoServiceProvider.getTodos(this.listUuid).subscribe(todos => {
+      this.todoItems = todos;
+    });
   }
 
   ionViewWillEnter() {

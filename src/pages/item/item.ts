@@ -10,6 +10,7 @@ import {
 } from "ionic-angular";
 import { TodoServiceProvider } from "../../services/todos.service";
 import { ListPage } from "../list/list";
+import { ConfirmPage } from "../confirm/confirm";
 
 import { FileChooser } from "@ionic-native/file-chooser";
 import { FilePath } from "@ionic-native/file-path";
@@ -29,6 +30,7 @@ export class Item {
   firestore = firebase.storage();
   imgsource: any;
   refresh: any;
+  complete: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -42,17 +44,30 @@ export class Item {
   ) {}
 
   ngOnInit() {
-    this.firestore
-      .ref()
-      .child(this.itemData.uuid)
-      .getDownloadURL()
-      .then(url => {
-        this.zone.run(() => {
-          this.imgsource = url;
+    if (this.imgsource === undefined) {
+      this.firestore
+        .ref()
+        .child(this.itemData.uuid)
+        .getDownloadURL()
+        .then(url => {
+          this.zone.run(() => {
+            this.imgsource = url;
+          });
+        })
+        .catch(error => {
+          this.imgsource = "null"
         });
-      }).catch(error => {
-        console.log('object not found')
-      })
+    }
+
+    this.complete = this.itemData.complete;
+  }
+
+  setCompleteTodo() {
+    this.todoServiceProvider.setItemComplete(
+      this.listUuid,
+      this.itemData.uuid,
+      this.complete
+    );
   }
 
   showToast(msg, position) {
@@ -121,27 +136,9 @@ export class Item {
   }
 
   onDelete() {
-    let confirm = this.alertCtrl.create({
-      title: "Delete item",
-      message: "Are sure you want to delete this item?",
-      buttons: [
-        {
-          text: "Disagree",
-          handler: () => {
-            console.log("Disagree clicked");
-          }
-        },
-        {
-          text: "Agree",
-          handler: () => {
-            this.todoServiceProvider.deleteTodo(
-              this.listUuid,
-              this.itemData.uuid
-            );
-          }
-        }
-      ]
+    this.navCtrl.push(ConfirmPage, {
+      listUuid: this.listUuid,
+      itemUuid: this.itemData.uuid
     });
-    confirm.present();
   }
 }
