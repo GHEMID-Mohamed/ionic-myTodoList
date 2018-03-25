@@ -5,7 +5,7 @@
   <ion-card-content>
     {{ itemData.desc }}
     <br />
-    <img *ngIf="imgsource" src="{{imgsource}}">
+    <img *ngIf="imgsource && !noImage" src="{{imgsource}}" />
     <img *ngIf="!imgsource" src="assets/imgs/loading.gif" alt="loading" />
     <ion-item>
       <ion-label>Done</ion-label>

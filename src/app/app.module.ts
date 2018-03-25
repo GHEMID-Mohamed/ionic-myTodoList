@@ -9,6 +9,7 @@ import { StatusBar } from "@ionic-native/status-bar";
 import { AngularFireAuth } from "angularfire2/auth";
 import { SpeechRecognition } from "@ionic-native/speech-recognition";
 import { NFC, Ndef } from "@ionic-native/nfc";
+import { BarcodeScanner } from "@ionic-native/barcode-scanner";
 
 import { MyApp } from "./app.component";
 import { HomePage } from "../pages/home/home";
@@ -24,7 +25,7 @@ import { FilePath } from "@ionic-native/file-path";
 import { File } from "@ionic-native/file";
 import { NewListPage } from "../pages/new-list/new-list";
 import { EditListPage } from "../pages/edit-list/edit-list";
-import { ConfirmPage } from "../pages/confirm/confirm"
+import { ConfirmPage } from "../pages/confirm/confirm";
 
 import { TodoServiceProvider } from "../services/todos.service";
 
@@ -75,7 +76,8 @@ import { TodoServiceProvider } from "../services/todos.service";
     FilePath,
     SpeechRecognition,
     NFC,
-    Ndef
+    Ndef,
+    BarcodeScanner
   ]
 })
 export class AppModule {}

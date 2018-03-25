@@ -31,6 +31,7 @@ export class Item {
   imgsource: any;
   refresh: any;
   complete: boolean;
+  noImage: boolean = false
 
   constructor(
     public navCtrl: NavController,
@@ -52,10 +53,12 @@ export class Item {
         .then(url => {
           this.zone.run(() => {
             this.imgsource = url;
+            this.noImage = false
           });
         })
         .catch(error => {
-          this.imgsource = "null"
+          this.imgsource = "none"
+          this.noImage = true
         });
     }
 

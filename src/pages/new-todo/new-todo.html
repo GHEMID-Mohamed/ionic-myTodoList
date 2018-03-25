@@ -22,6 +22,6 @@
       <ion-label>Description</ion-label>
       <ion-textarea formControlName="description"></ion-textarea>
     </ion-item>
-    <button ion-button block type="submit">Add</button>
+    <button ion-button block type="submit" [disabled]="!todoform.valid">Add</button>
   </form>
 </ion-content>

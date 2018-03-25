@@ -1,9 +1,9 @@
-import { Component } from "@angular/core"
-import { NavController, NavParams } from "ionic-angular"
-import { TodoServiceProvider } from "../../services/todos.service"
-import { Validators, FormBuilder, FormGroup } from "@angular/forms"
-import { TodoItem } from "../../models/TodoItem"
-import { generateId } from "../../utils"
+import { Component } from "@angular/core";
+import { NavController, NavParams, AlertController } from "ionic-angular";
+import { TodoServiceProvider } from "../../services/todos.service";
+import { Validators, FormBuilder, FormGroup } from "@angular/forms";
+import { TodoItem } from "../../models/TodoItem";
+import { generateId } from "../../utils";
 import { SpeechRecognition } from "@ionic-native/speech-recognition";
 import { ChangeDetectorRef } from "@angular/core";
 
@@ -12,9 +12,9 @@ import { ChangeDetectorRef } from "@angular/core";
   templateUrl: "new-todo.html"
 })
 export class NewTodoPage {
-  todoform: any
-  listUuid: string
-  todoItem: TodoItem = { name: "", complete: false, desc: "", uuid: "" }
+  todoform: any;
+  listUuid: string;
+  todoItem: TodoItem = { name: "", complete: false, desc: "", uuid: "" };
 
   constructor(
     public navCtrl: NavController,
@@ -22,24 +22,37 @@ export class NewTodoPage {
     public todoServiceProvider: TodoServiceProvider,
     private formBuilder: FormBuilder,
     private speechRecognition: SpeechRecognition,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    public alertCtrl: AlertController
   ) {
     this.todoform = this.formBuilder.group({
       title: ["", Validators.required],
       description: [""]
-    })
-    this.listUuid = navParams.get("listUuid")
+    });
+    this.listUuid = navParams.get("listUuid");
   }
 
-  onAddTodo() {
-    this.todoItem.name = this.todoform.value.title
-    this.todoItem.desc = this.todoform.value.description
-    this.todoItem.complete = false
-    this.todoItem.uuid = generateId()
-    this.todoServiceProvider.addTodo(this.listUuid, this.todoItem)
-    this.navCtrl.pop()
-  }
+  async onAddTodo() {
+    this.todoItem.name = this.todoform.value.title;
+    this.todoItem.desc = this.todoform.value.description;
+    this.todoItem.complete = false;
+    this.todoItem.uuid = generateId();
 
+    const state = await this.todoServiceProvider.addTodo(
+      this.listUuid,
+      this.todoItem
+    );
+    if (!state) {
+      let alert = this.alertCtrl.create({
+        title: "New todo!",
+        subTitle: "This todo already exists!",
+        buttons: ["OK"]
+      });
+      alert.present();
+    } else {
+      this.navCtrl.pop();
+    }
+  }
 
   private getPermission() {
     this.speechRecognition.hasPermission().then((hasPermission: boolean) => {
@@ -60,7 +73,7 @@ export class NewTodoPage {
     this.getPermission();
     this.speechRecognition.startListening(options).subscribe(
       matches => {
-        this.todoform.controls['title'].setValue(matches.pop());
+        this.todoform.controls["title"].setValue(matches.pop());
         this.cd.detectChanges();
       },
       error => console.log(error)

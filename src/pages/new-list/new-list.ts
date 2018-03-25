@@ -1,5 +1,10 @@
 import { Component } from "@angular/core";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import {
+  IonicPage,
+  NavController,
+  NavParams,
+  AlertController
+} from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 import { SpeechRecognition } from "@ionic-native/speech-recognition";
 import { ChangeDetectorRef } from "@angular/core";
@@ -20,16 +25,28 @@ export class NewListPage {
     private formBuilder: FormBuilder,
     public todoServiceProvider: TodoServiceProvider,
     private speechRecognition: SpeechRecognition,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    public alertCtrl: AlertController
   ) {
     this.todoform = this.formBuilder.group({
       title: ["", Validators.required]
     });
   }
 
-  onAddList() {
-    this.todoServiceProvider.AddList(this.todoform.value.title);
-    this.navCtrl.pop();
+  async onAddList() {
+    const state = await this.todoServiceProvider.AddList(
+      this.todoform.value.title
+    );
+    if (!state) {
+      let alert = this.alertCtrl.create({
+        title: "New list!",
+        subTitle: "This list already exists!",
+        buttons: ["OK"]
+      });
+      alert.present();
+    } else {
+      this.navCtrl.pop();
+    }
   }
 
   private getPermission() {
@@ -51,7 +68,7 @@ export class NewListPage {
     this.getPermission();
     this.speechRecognition.startListening(options).subscribe(
       matches => {
-        this.todoform.controls['title'].setValue(matches.pop());
+        this.todoform.controls["title"].setValue(matches.pop());
         this.cd.detectChanges();
       },
       error => console.log(error)

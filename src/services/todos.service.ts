@@ -127,27 +127,49 @@ export class TodoServiceProvider {
     }
   }
 
-  public AddList(name: string) {
-    const newListUuid = firebase
-      .database()
-      .ref()
+  public AddList(name: string): Promise<any> {
+    let usersRef = firebase.database().ref();
+    return usersRef
       .child("myLists")
-      .push().key;
+      .orderByChild("name")
+      .equalTo(name)
+      .once("value")
+      .then(snap => {
+        console.log(snap.val());
+        if (snap.val() === null) {
+          const newListUuid = firebase
+            .database()
+            .ref()
+            .child("myLists")
+            .push().key;
 
-    firebase
-      .database()
-      .ref(`myLists/${newListUuid}`)
-      .set({
-        name: name,
-        items: []
-      });
+          firebase
+            .database()
+            .ref(`myLists/${newListUuid}`)
+            .set({
+              name: name,
+              items: []
+            });
 
-    firebase
-      .database()
-      .ref(`users/${this.userId}/lists/${newListUuid}`)
-      .set({
-        name
+          firebase
+            .database()
+            .ref(`users/${this.userId}/lists/${newListUuid}`)
+            .set({
+              name
+            });
+          return true;
+        } else {
+          return false;
+        }
       });
+  }
+
+  getNameList(listUuid: string): Promise<any> {
+    return firebase
+      .database()
+      .ref(`myLists/${listUuid}`)
+      .once("value")
+      .then(snap => snap.val().name);
   }
 
   async editList(nameList, uuidList) {
@@ -210,19 +232,34 @@ export class TodoServiceProvider {
       .remove();
   }
 
-  public addTodo(listUuid: String, addedItem: TodoItem) {
-    const newTodoKey = firebase
-      .database()
-      .ref()
-      .child("items")
-      .push().key;
-    firebase
-      .database()
-      .ref(`myLists/${listUuid}/items/${newTodoKey}`)
-      .set({
-        name: addedItem.name,
-        desc: addedItem.desc,
-        complete: false
+  public addTodo(listUuid: String, addedItem: TodoItem): Promise<any> {
+    let usersRef = firebase.database().ref();
+    return usersRef
+      .child(`myLists/${listUuid}/items/`)
+      .orderByChild("name")
+      .equalTo(addedItem.name)
+      .once("value")
+      .then(snap => {
+        console.log(snap.val());
+        if (snap.val() === null) {
+          const newTodoKey = firebase
+            .database()
+            .ref()
+            .child("items")
+            .push().key;
+
+          firebase
+            .database()
+            .ref(`myLists/${listUuid}/items/${newTodoKey}`)
+            .set({
+              name: addedItem.name,
+              desc: addedItem.desc,
+              complete: false
+            });
+          return true;
+        } else {
+          return false;
+        }
       });
   }
 

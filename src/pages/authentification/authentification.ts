@@ -82,7 +82,12 @@ export class AuthentificationPage {
         this.navCtrl.push(HomePage);
       }
     } catch (e) {
-      console.error(e);
+      let alert = this.alertCtrl.create({
+        title: "Register",
+        subTitle: e.message,
+        buttons: ["OK"]
+      });
+      alert.present();
     }
   }
 

@@ -19,6 +19,7 @@ import { TodoServiceProvider } from "../../services/todos.service";
 import { ProfilPage } from "../profil/profil";
 import { Toast } from "@ionic-native/toast";
 import { SharedListsPage } from "../shared-lists/shared-lists";
+import { BarcodeScanner } from "@ionic-native/barcode-scanner";
 
 import "rxjs/Rx";
 
@@ -29,10 +30,10 @@ import "rxjs/Rx";
   providers: [Toast, GooglePlus]
 })
 export class HomePage {
-  lists: TodoList[] = [];
+  lists: TodoList[];
   listsPending: boolean = true;
-  sharedLists: any = []
-  notification: boolean = true
+  sharedLists: any = [];
+  notification: boolean = true;
 
   constructor(
     public afAuth: AngularFireAuth,
@@ -43,13 +44,14 @@ export class HomePage {
     public toast: Toast,
     public menu: MenuController,
     public actionSheetCtrl: ActionSheetController,
-    public googlePlus: GooglePlus
+    public googlePlus: GooglePlus,
+    private barcodeScanner: BarcodeScanner
   ) {
     menu.enable(true);
   }
 
   onNotificationCLick() {
-    this.notification = false
+    this.notification = false;
     this.navCtrl.push(SharedListsPage);
   }
 
@@ -58,13 +60,13 @@ export class HomePage {
     this.todoServiceProvider.getList().subscribe(lists => {
       this.lists = lists;
       this.listsPending = false;
-      this.getSharedLists()
+      this.getSharedLists();
     });
   }
 
   getSharedLists() {
     this.todoServiceProvider.getSharedLists().subscribe(lists => {
-      this.sharedLists = lists
+      this.sharedLists = lists;
     });
   }
 
@@ -96,8 +98,16 @@ export class HomePage {
         },
         {
           text: "Add",
-          handler: data => {
-            this.todoServiceProvider.AddList(data.title);
+          handler: async data => {
+            const state = await this.todoServiceProvider.AddList(data.title);
+            if (!state) {
+              let alert = this.alertCtrl.create({
+                title: "New list!",
+                subTitle: "This list already exists!",
+                buttons: ["OK"]
+              });
+              alert.present();
+            }
           }
         }
       ]
@@ -202,6 +212,7 @@ export class HomePage {
         if (modeShare === "email") {
           this.shareListWithEmail(listUuid, name, modeShare);
         } else if (modeShare === "qrcode") {
+          this.barcodeScanner.encode("TEXT_TYPE", listUuid);
         }
       }
     });
@@ -259,6 +270,28 @@ export class HomePage {
 
   onSeeSharedLists() {
     this.navCtrl.push(SharedListsPage);
+  }
+
+  scanBarCode() {
+    const userId = this.todoServiceProvider.getUserId();
+
+    this.barcodeScanner
+      .scan()
+      .then(async listUuidShared => {
+        const listName = await this.todoServiceProvider.getNameList(
+          listUuidShared.text
+        );
+        
+        firebase
+          .database()
+          .ref(`users/${userId}/lists/${listUuidShared.text}`)
+          .set({
+            name: listName
+          });
+      })
+      .catch(err => {
+        console.log("Error", err);
+      });
   }
 
   logout() {

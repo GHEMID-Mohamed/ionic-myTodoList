@@ -12,9 +12,7 @@
 </ion-header>
 
 <ion-content padding>
-  <div text-center>
-    <ion-spinner *ngIf="listsPending"></ion-spinner>
-  </div>
+  <img *ngIf="!lists" src="assets/imgs/loading.gif" alt="loading" />
   <ion-fab bottom right>
     <button ion-fab color="secondary" (click)="openNewList()">
       <ion-icon name='add'></ion-icon>
@@ -60,6 +58,10 @@
         Shared lists &nbsp;
         <ion-icon *ngIf="sharedLists.length > 0 && notification" name='md-notifications' class="notification-icon"></ion-icon>
       </button>
+      <button ion-item icon-left (click)="scanBarCode()">
+          <ion-icon name="qr-scanner"></ion-icon>
+          Scan & share list
+        </button>
       <button ion-item (click)="logout()">
         <ion-icon name="log-out"></ion-icon>
         Logout
