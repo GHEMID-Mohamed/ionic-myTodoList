@@ -1,4 +1,5 @@
 import { Component, Input, NgZone } from "@angular/core";
+import { Camera, CameraOptions } from "@ionic-native/camera";
 import { EditTodoPage } from "../edit-todo/edit-todo";
 import {
   IonicPage,
@@ -6,7 +7,8 @@ import {
   NavParams,
   AlertController,
   ToastController,
-  Alert
+  Alert,
+  ActionSheetController
 } from "ionic-angular";
 import { TodoServiceProvider } from "../../services/todos.service";
 import { ListPage } from "../list/list";
@@ -31,7 +33,7 @@ export class Item {
   imgsource: any;
   refresh: any;
   complete: boolean;
-  noImage: boolean = false
+  noImage: boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -41,7 +43,9 @@ export class Item {
     private fileChooser: FileChooser,
     public zone: NgZone,
     public file: File,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    public actionSheetCtrl: ActionSheetController,
+    private camera: Camera
   ) {}
 
   ngOnInit() {
@@ -53,12 +57,12 @@ export class Item {
         .then(url => {
           this.zone.run(() => {
             this.imgsource = url;
-            this.noImage = false
+            this.noImage = false;
           });
         })
         .catch(error => {
-          this.imgsource = "none"
-          this.noImage = true
+          this.imgsource = "none";
+          this.noImage = true;
         });
     }
 
@@ -85,6 +89,63 @@ export class Item {
     });
 
     toast.present();
+  }
+
+  uploadPhotoOptions(listUuid: string, name: string) {
+    let actionSheet = this.actionSheetCtrl.create({
+      title: "List options",
+      buttons: [
+        {
+          text: "Take a picture",
+          role: "destructive",
+          handler: () => {
+            const options: CameraOptions = {
+              quality: 50,
+              targetWidth: 320,
+              targetHeight: 320,
+              destinationType: this.camera.DestinationType.DATA_URL,
+              encodingType: this.camera.EncodingType.JPEG,
+              mediaType: this.camera.MediaType.PICTURE
+            };
+
+            this.imgsource = undefined;
+            this.camera.getPicture(options).then(
+              imageData => {
+                this.firestore
+                  .ref(this.itemData.uuid)
+                  .putString(imageData, "base64", { contentType: "image/png" })
+                  .then(() => {
+                    this.firestore
+                      .ref()
+                      .child(this.itemData.uuid)
+                      .getDownloadURL()
+                      .then(url => {
+                        this.zone.run(() => {
+                          this.noImage = false;
+                          this.imgsource = url;
+                        });
+                      });
+                  });
+              },
+              err => {
+                console.log(err);
+              }
+            );
+          },
+          icon: "md-camera"
+        },
+        {
+          text: "Upload image",
+          role: "destructive",
+          handler: () => {
+            this.addImage();
+          },
+          icon: "md-images"
+        }
+      ]
+    });
+
+    actionSheet.present();
   }
 
   addImage() {

@@ -26,6 +26,7 @@ import { File } from "@ionic-native/file";
 import { NewListPage } from "../pages/new-list/new-list";
 import { EditListPage } from "../pages/edit-list/edit-list";
 import { ConfirmPage } from "../pages/confirm/confirm";
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 import { TodoServiceProvider } from "../services/todos.service";
 
@@ -77,7 +78,8 @@ import { TodoServiceProvider } from "../services/todos.service";
     SpeechRecognition,
     NFC,
     Ndef,
-    BarcodeScanner
+    BarcodeScanner,
+    Camera
   ]
 })
 export class AppModule {}
