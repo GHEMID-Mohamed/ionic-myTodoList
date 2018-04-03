@@ -85,7 +85,6 @@
     <plugin name="cordova-plugin-googleplus" spec="^5.2.1">
         <variable name="REVERSED_CLIENT_ID" value="146278318061-ahmheb0n83k1q5ia522qffl75adqct68.apps.googleusercontent.com" />
     </plugin>
-    <engine name="android" spec="^7.0.0" />
     <plugin name="cordova-plugin-x-toast" spec="^2.6.2" />
     <plugin name="cordova-plugin-filepath" spec="^1.2.0" />
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
@@ -95,4 +94,5 @@
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
     </plugin>
     <plugin name="cordova-plugin-camera" spec="^4.0.2" />
+    <engine name="android" spec="7.1.0" />
 </widget>

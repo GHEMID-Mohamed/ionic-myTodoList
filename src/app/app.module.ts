@@ -27,6 +27,7 @@ import { NewListPage } from "../pages/new-list/new-list";
 import { EditListPage } from "../pages/edit-list/edit-list";
 import { ConfirmPage } from "../pages/confirm/confirm";
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import { CompletedTodosPipe } from '../pipes/completed-todos/completed-todos'
 
 import { TodoServiceProvider } from "../services/todos.service";
 
@@ -43,7 +44,8 @@ import { TodoServiceProvider } from "../services/todos.service";
     NewListPage,
     EditListPage,
     SharedListsPage,
-    ConfirmPage
+    ConfirmPage,
+    CompletedTodosPipe
   ],
   imports: [
     BrowserModule,

@@ -1,10 +1,11 @@
-import { Component } from "@angular/core";
+import { Component, Pipe, PipeTransform } from "@angular/core";
 import {
   IonicPage,
   NavController,
   NavParams,
   AlertController,
-  MenuController
+  MenuController,
+  ActionSheetController
 } from "ionic-angular";
 import { TodoServiceProvider } from "../../services/todos.service";
 import { NewTodoPage } from "../new-todo/new-todo";
@@ -23,13 +24,15 @@ export class ListPage {
   ref: any;
   RadioOpen: boolean;
   connexionMode: string;
+  filterIteratee: boolean = undefined;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public todoServiceProvider: TodoServiceProvider,
     public alertCtrl: AlertController,
-    menu: MenuController
+    menu: MenuController,
+    public actionSheetCtrl: ActionSheetController
   ) {
     menu.enable(true);
 
@@ -52,5 +55,39 @@ export class ListPage {
       listUuid: this.listUuid,
       refreshTodos: this.getTodos()
     });
+  }
+
+  filter() {
+    let actionSheet = this.actionSheetCtrl.create({
+      title: "Filter",
+      buttons: [
+        {
+          text: "None",
+          role: "destructive",
+          handler: () => {
+            this.filterIteratee = undefined;
+          },
+          icon: "md-close-circle"
+        },
+        {
+          text: "Completed",
+          role: "destructive",
+          handler: () => {
+            this.filterIteratee = true;
+          },
+          icon: "md-checkmark-circle"
+        },
+        {
+          text: "Uncompleted",
+          role: "destructive",
+          handler: () => {
+            this.filterIteratee = false;
+          },
+          icon: "md-close-circle"
+        }
+      ]
+    });
+
+    actionSheet.present();
   }
 }

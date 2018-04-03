@@ -1,6 +1,11 @@
 <ion-header>
   <ion-navbar>
     <ion-title>{{ name }}</ion-title>
+    <ion-buttons end>
+      <button (click)="filter()" ion-button icon-only float-right>
+        <ion-icon name="ios-funnel"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -11,7 +16,7 @@
     </button>
   </ion-fab>
   <ion-list class="list-style">
-    <ion-item *ngFor="let todo of todoItems">
+    <ion-item *ngFor="let todo of (todoItems | completedTodosPipe: filterIteratee)">
       <item-todo [listUuid]="listUuid" [itemData]="todo"></item-todo>
     </ion-item>
   </ion-list>
