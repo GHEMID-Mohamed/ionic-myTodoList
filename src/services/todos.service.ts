@@ -212,6 +212,10 @@ export class TodoServiceProvider {
     itemUuid: string,
     complete: boolean
   ) {
+    let items = this.data.find(d => d.uuid == listUuid).items;
+    let index = items.findIndex(value => value.uuid == itemUuid);
+    items[index].complete = complete;
+
     firebase
       .database()
       .ref(`myLists/${listUuid}/items/${itemUuid}/complete`)

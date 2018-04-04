@@ -169,6 +169,7 @@ export class Item {
             .put(imgBlob)
             .then(res => {
               this.showToast("upload sucess", "bottom");
+              this.noImage = false;
               this.displayImage();
             })
             .catch(err => {
